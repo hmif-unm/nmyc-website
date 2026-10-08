@@ -1,0 +1,19 @@
+{
+  "name": "nmyc-website",
+  "version": "1.0.0",
+  "description": "Official website for Nusa Mandiri Youth Choir (NMYC), a student choir organization at Universitas Nusa Mandiri.",
+  "homepage": "https://github.com/hmif-unm/nmyc-website#readme",
+  "bugs": {
+    "url": "https://github.com/hmif-unm/nmyc-website/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hmif-unm/nmyc-website.git"
+  },
+  "author": "hmif-unm",
+  "type": "commonjs",
+  "main": "backend/src/server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
