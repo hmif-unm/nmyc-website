@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen font-poppins antialiased selection:bg-primary selection:text-white gallery-page relative overflow-x-hidden">
 
     <!-- ===================================== -->
