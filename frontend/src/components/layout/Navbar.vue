@@ -2,7 +2,7 @@
   <div class="w-full flex flex-col items-center">
     <!-- Frosted Glass Pill Navbar matching Figma Group 26 (Scales gracefully on wide screens) -->
     <nav
-      class="w-full max-w-[897px] lg:max-w-[980px] xl:max-w-[1040px] h-[64px] sm:h-[72px] md:h-[78px] lg:h-[82px] rounded-full px-5 sm:px-8 md:px-10 shadow-lg flex items-center justify-between border border-white/30 backdrop-blur-md text-white transition-all duration-300"
+      class="w-full max-w-[897px] lg:max-w-[980px] xl:max-w-[1040px] h-[64px] sm:h-[72px] md:h-[78px] lg:h-[82px] rounded-full px-5 sm:px-8 md:px-10 shadow-lg flex items-center justify-between border border-white/30 backdrop-blur-md text-white"
       style="background: rgba(255, 255, 255, 0.16); box-shadow: 0 4px 28px rgba(0, 0, 0, 0.12);"
     >
       <!-- Logo Badge -->

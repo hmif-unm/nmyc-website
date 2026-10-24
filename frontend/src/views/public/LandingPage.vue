@@ -158,27 +158,39 @@
         <!-- Hierarchical Cross-Tree Layout matching landing-page full.png -->
         <div class="flex flex-col items-center">
           <!-- 1. KETUA UMUM (Center Top) -->
-          <div class="w-full max-w-[408px] z-10">
-            <div class="w-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg relative transition-all duration-300 hover:shadow-xl">
-              <!-- Star Icon & Divider -->
-              <div class="flex items-center gap-2 mb-2">
-                <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
-              </div>
-              <div class="h-0.5 w-full bg-light/60 mb-4"></div>
+          <div class="w-full max-w-[408px] h-[178px] sm:h-[184px] z-10 flip-card-container cursor-pointer select-none relative">
+            <div class="flip-card-inner w-full h-full">
+              <!-- Sisi Depan (Front Side - Preserved 100%) -->
+              <div class="flip-card-front absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex flex-col justify-between overflow-hidden">
+                <!-- Star Icon & Divider -->
+                <div>
+                  <div class="flex items-center gap-2 mb-2">
+                    <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
+                  </div>
+                  <div class="h-0.5 w-full bg-light/60"></div>
+                </div>
 
-              <!-- Content -->
-              <div class="flex items-center justify-between gap-4">
-                <div class="flex-1 min-w-0">
-                  <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                    {{ leader.name }}
-                  </h4>
-                  <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
-                    {{ leader.role }}
-                  </p>
+                <!-- Content -->
+                <div class="flex items-center justify-between gap-4">
+                  <div class="flex-1 min-w-0">
+                    <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
+                      {{ leader.name }}
+                    </h4>
+                    <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
+                      {{ leader.role }}
+                    </p>
+                  </div>
+                  <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
+                    <img :src="leader.avatar" :alt="leader.name" class="w-full h-full object-cover" />
+                  </div>
                 </div>
-                <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                  <img :src="leader.avatar" :alt="leader.name" class="w-full h-full object-cover" />
-                </div>
+              </div>
+
+              <!-- Sisi Belakang (Back Side - 'profile ig disini' Centered) -->
+              <div class="flip-card-back absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex items-center justify-center overflow-hidden">
+                <p class="text-primary font-bold text-lg sm:text-xl text-center tracking-wide">
+                  profile ig disini
+                </p>
               </div>
             </div>
           </div>
@@ -187,27 +199,39 @@
           <div class="w-1 h-14 bg-primary"></div>
 
           <!-- 2. WAKIL KETUA UMUM (Center Middle) -->
-          <div class="w-full max-w-[408px] z-10">
-            <div class="w-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg relative transition-all duration-300 hover:shadow-xl">
-              <!-- Star Icon & Divider -->
-              <div class="flex items-center gap-2 mb-2">
-                <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
-              </div>
-              <div class="h-0.5 w-full bg-light/60 mb-4"></div>
+          <div class="w-full max-w-[408px] h-[178px] sm:h-[184px] z-10 flip-card-container cursor-pointer select-none relative">
+            <div class="flip-card-inner w-full h-full">
+              <!-- Sisi Depan (Front Side - Preserved 100%) -->
+              <div class="flip-card-front absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex flex-col justify-between overflow-hidden">
+                <!-- Star Icon & Divider -->
+                <div>
+                  <div class="flex items-center gap-2 mb-2">
+                    <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
+                  </div>
+                  <div class="h-0.5 w-full bg-light/60"></div>
+                </div>
 
-              <!-- Content -->
-              <div class="flex items-center justify-between gap-4">
-                <div class="flex-1 min-w-0">
-                  <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                    {{ viceLeader.name }}
-                  </h4>
-                  <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
-                    {{ viceLeader.role }}
-                  </p>
+                <!-- Content -->
+                <div class="flex items-center justify-between gap-4">
+                  <div class="flex-1 min-w-0">
+                    <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
+                      {{ viceLeader.name }}
+                    </h4>
+                    <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
+                      {{ viceLeader.role }}
+                    </p>
+                  </div>
+                  <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
+                    <img :src="viceLeader.avatar" :alt="viceLeader.name" class="w-full h-full object-cover" />
+                  </div>
                 </div>
-                <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                  <img :src="viceLeader.avatar" :alt="viceLeader.name" class="w-full h-full object-cover" />
-                </div>
+              </div>
+
+              <!-- Sisi Belakang (Back Side - 'profile ig disini' Centered) -->
+              <div class="flip-card-back absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex items-center justify-center overflow-hidden">
+                <p class="text-primary font-bold text-lg sm:text-xl text-center tracking-wide">
+                  profile ig disini
+                </p>
               </div>
             </div>
           </div>
@@ -226,12 +250,87 @@
 
             <div class="flex items-center justify-between relative z-10">
               <!-- Sekretaris 1 -->
-              <div class="w-full max-w-[408px]">
-                <div class="w-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg relative transition-all duration-300 hover:shadow-xl">
-                  <div class="flex items-center gap-2 mb-2">
-                    <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
+              <div class="w-full max-w-[408px] h-[178px] sm:h-[184px] flip-card-container cursor-pointer select-none relative">
+                <div class="flip-card-inner w-full h-full">
+                  <div class="flip-card-front absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex flex-col justify-between overflow-hidden">
+                    <div>
+                      <div class="flex items-center gap-2 mb-2">
+                        <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
+                      </div>
+                      <div class="h-0.5 w-full bg-light/60"></div>
+                    </div>
+                    <div class="flex items-center justify-between gap-4">
+                      <div class="flex-1 min-w-0">
+                        <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
+                          {{ secretary1.name }}
+                        </h4>
+                        <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
+                          {{ secretary1.role }}
+                        </p>
+                      </div>
+                      <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
+                        <img :src="secretary1.avatar" :alt="secretary1.name" class="w-full h-full object-cover" />
+                      </div>
+                    </div>
                   </div>
-                  <div class="h-0.5 w-full bg-light/60 mb-4"></div>
+
+                  <!-- Sisi Belakang -->
+                  <div class="flip-card-back absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex items-center justify-center overflow-hidden">
+                    <p class="text-primary font-bold text-lg sm:text-xl text-center tracking-wide">
+                      profile ig disini
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sekretaris 2 -->
+              <div class="w-full max-w-[408px] h-[178px] sm:h-[184px] flip-card-container cursor-pointer select-none relative">
+                <div class="flip-card-inner w-full h-full">
+                  <div class="flip-card-front absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex flex-col justify-between overflow-hidden">
+                    <div>
+                      <div class="flex items-center gap-2 mb-2">
+                        <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
+                      </div>
+                      <div class="h-0.5 w-full bg-light/60"></div>
+                    </div>
+                    <div class="flex items-center justify-between gap-4">
+                      <div class="flex-1 min-w-0">
+                        <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
+                          {{ secretary2.name }}
+                        </h4>
+                        <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
+                          {{ secretary2.role }}
+                        </p>
+                      </div>
+                      <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
+                        <img :src="secretary2.avatar" :alt="secretary2.name" class="w-full h-full object-cover" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Sisi Belakang -->
+                  <div class="flip-card-back absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex items-center justify-center overflow-hidden">
+                    <p class="text-primary font-bold text-lg sm:text-xl text-center tracking-wide">
+                      profile ig disini
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile / Tablet Stacked Cards for Sekretaris 1 & 2 -->
+          <div class="lg:hidden w-full flex flex-col items-center">
+            <!-- Sekretaris 1 -->
+            <div class="w-full max-w-[408px] h-[178px] sm:h-[184px] flip-card-container cursor-pointer select-none relative">
+              <div class="flip-card-inner w-full h-full">
+                <div class="flip-card-front absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex flex-col justify-between overflow-hidden">
+                  <div>
+                    <div class="flex items-center gap-2 mb-2">
+                      <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
+                    </div>
+                    <div class="h-0.5 w-full bg-light/60"></div>
+                  </div>
                   <div class="flex items-center justify-between gap-4">
                     <div class="flex-1 min-w-0">
                       <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
@@ -246,15 +345,28 @@
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <!-- Sekretaris 2 -->
-              <div class="w-full max-w-[408px]">
-                <div class="w-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg relative transition-all duration-300 hover:shadow-xl">
-                  <div class="flex items-center gap-2 mb-2">
-                    <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
+                <!-- Sisi Belakang -->
+                <div class="flip-card-back absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex items-center justify-center overflow-hidden">
+                  <p class="text-primary font-bold text-lg sm:text-xl text-center tracking-wide">
+                    profile ig disini
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="w-1 h-12 bg-primary"></div>
+
+            <!-- Sekretaris 2 -->
+            <div class="w-full max-w-[408px] h-[178px] sm:h-[184px] flip-card-container cursor-pointer select-none relative">
+              <div class="flip-card-inner w-full h-full">
+                <div class="flip-card-front absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex flex-col justify-between overflow-hidden">
+                  <div>
+                    <div class="flex items-center gap-2 mb-2">
+                      <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
+                    </div>
+                    <div class="h-0.5 w-full bg-light/60"></div>
                   </div>
-                  <div class="h-0.5 w-full bg-light/60 mb-4"></div>
                   <div class="flex items-center justify-between gap-4">
                     <div class="flex-1 min-w-0">
                       <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
@@ -269,56 +381,12 @@
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Mobile / Tablet Stacked Cards for Sekretaris 1 & 2 -->
-          <div class="lg:hidden w-full flex flex-col items-center">
-            <!-- Sekretaris 1 -->
-            <div class="w-full max-w-[408px]">
-              <div class="w-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg relative">
-                <div class="flex items-center gap-2 mb-2">
-                  <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
-                </div>
-                <div class="h-0.5 w-full bg-light/60 mb-4"></div>
-                <div class="flex items-center justify-between gap-4">
-                  <div class="flex-1 min-w-0">
-                    <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                      {{ secretary1.name }}
-                    </h4>
-                    <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
-                      {{ secretary1.role }}
-                    </p>
-                  </div>
-                  <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                    <img :src="secretary1.avatar" :alt="secretary1.name" class="w-full h-full object-cover" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="w-1 h-12 bg-primary"></div>
-
-            <!-- Sekretaris 2 -->
-            <div class="w-full max-w-[408px]">
-              <div class="w-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg relative">
-                <div class="flex items-center gap-2 mb-2">
-                  <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
-                </div>
-                <div class="h-0.5 w-full bg-light/60 mb-4"></div>
-                <div class="flex items-center justify-between gap-4">
-                  <div class="flex-1 min-w-0">
-                    <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                      {{ secretary2.name }}
-                    </h4>
-                    <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
-                      {{ secretary2.role }}
-                    </p>
-                  </div>
-                  <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                    <img :src="secretary2.avatar" :alt="secretary2.name" class="w-full h-full object-cover" />
-                  </div>
+                <!-- Sisi Belakang -->
+                <div class="flip-card-back absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex items-center justify-center overflow-hidden">
+                  <p class="text-primary font-bold text-lg sm:text-xl text-center tracking-wide">
+                    profile ig disini
+                  </p>
                 </div>
               </div>
             </div>
@@ -328,27 +396,39 @@
           <div class="w-1 h-14 bg-primary"></div>
 
           <!-- 4. BENDAHARA (Center Bottom) -->
-          <div class="w-full max-w-[408px] z-10">
-            <div class="w-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg relative transition-all duration-300 hover:shadow-xl">
-              <!-- Star Icon & Divider -->
-              <div class="flex items-center gap-2 mb-2">
-                <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
-              </div>
-              <div class="h-0.5 w-full bg-light/60 mb-4"></div>
+          <div class="w-full max-w-[408px] h-[178px] sm:h-[184px] z-10 flip-card-container cursor-pointer select-none relative">
+            <div class="flip-card-inner w-full h-full">
+              <!-- Sisi Depan (Front Side - Preserved 100%) -->
+              <div class="flip-card-front absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex flex-col justify-between overflow-hidden">
+                <!-- Star Icon & Divider -->
+                <div>
+                  <div class="flex items-center gap-2 mb-2">
+                    <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
+                  </div>
+                  <div class="h-0.5 w-full bg-light/60"></div>
+                </div>
 
-              <!-- Content -->
-              <div class="flex items-center justify-between gap-4">
-                <div class="flex-1 min-w-0">
-                  <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                    {{ treasurer.name }}
-                  </h4>
-                  <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
-                    {{ treasurer.role }}
-                  </p>
+                <!-- Content -->
+                <div class="flex items-center justify-between gap-4">
+                  <div class="flex-1 min-w-0">
+                    <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
+                      {{ treasurer.name }}
+                    </h4>
+                    <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
+                      {{ treasurer.role }}
+                    </p>
+                  </div>
+                  <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
+                    <img :src="treasurer.avatar" :alt="treasurer.name" class="w-full h-full object-cover" />
+                  </div>
                 </div>
-                <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                  <img :src="treasurer.avatar" :alt="treasurer.name" class="w-full h-full object-cover" />
-                </div>
+              </div>
+
+              <!-- Sisi Belakang (Back Side - 'profile ig disini' Centered) -->
+              <div class="flip-card-back absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex items-center justify-center overflow-hidden">
+                <p class="text-primary font-bold text-lg sm:text-xl text-center tracking-wide">
+                  profile ig disini
+                </p>
               </div>
             </div>
           </div>
@@ -478,6 +558,8 @@
 </template>
 
 <script setup>
+import { ref, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import Navbar from '@/components/layout/Navbar.vue'
 
 // Assets import
@@ -486,6 +568,42 @@ import defaultAvatar from '@/assets/landing-assets/ellipse-20.png'
 import starImg from '@/assets/landing-assets/star.png'
 import quoteImg from '@/assets/landing-assets/Group 24.png'
 import logoImg from '@/assets/landing-assets/logo.png'
+
+const route = useRoute()
+
+// 3D Flip Card state for Organization Chart
+const flippedCards = ref({})
+
+function toggleFlip(cardKey) {
+  flippedCards.value[cardKey] = !flippedCards.value[cardKey]
+}
+
+function isFlipped(cardKey) {
+  return !!flippedCards.value[cardKey]
+}
+
+// Seamless scroll to section if loaded with hash (e.g. from /galeri)
+function scrollToCurrentHash() {
+  if (route.hash) {
+    const el = document.querySelector(route.hash)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+}
+
+onMounted(() => {
+  if (route.hash) {
+    setTimeout(scrollToCurrentHash, 100)
+    setTimeout(scrollToCurrentHash, 350)
+  }
+})
+
+watch(() => route.hash, (newHash) => {
+  if (newHash) {
+    setTimeout(scrollToCurrentHash, 100)
+  }
+})
 
 // Misi Points (01 - 04) - Exact Text from Figma Gambar 1
 const missions = [
@@ -545,3 +663,51 @@ const socialLinks = [
   { name: 'YouTube', url: 'https://youtube.com' }
 ]
 </script>
+
+<style scoped>
+/* 3D Flip Card Container & Transitions */
+.flip-card-container {
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+/* Hover-based automatic flip */
+.flip-card-container:hover .flip-card-inner,
+.flip-card-inner.is-flipped {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+.flip-card-front {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(0deg) translateZ(1px);
+  -webkit-transform: rotateY(0deg) translateZ(1px);
+}
+
+.flip-card-back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg) translateZ(1px);
+  -webkit-transform: rotateY(180deg) translateZ(1px);
+}
+</style>
