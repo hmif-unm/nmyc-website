@@ -3,128 +3,176 @@
     <!-- ========================================== -->
     <!-- 1. HERO SECTION & FLOATING NAVBAR          -->
     <!-- ========================================== -->
-    <header id="hero" class="relative w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 pt-3 sm:pt-5 pb-12 md:pb-20 flex justify-center">
-      <!-- Full-Screen Panoramic Banner (W: up to 1860px on wide monitors, H: up to 860px) -->
+    <header id="hero" class="relative w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 pt-3 sm:pt-5 pb-8 md:pb-20 flex justify-center">
+      <!-- Hero Banner Container -->
       <div
-        class="relative w-full max-w-[1860px] min-h-[660px] md:min-h-[760px] lg:h-[820px] xl:h-[860px] rounded-t-[60px] sm:rounded-t-[100px] md:rounded-t-[130px] lg:rounded-t-[157px] rounded-b-[24px] md:rounded-b-[40px] overflow-hidden shadow-2xl bg-dark flex flex-col justify-between border border-white/30"
+        class="relative w-full max-w-[1860px] min-h-[480px] sm:min-h-[580px] md:min-h-[760px] lg:h-[820px] xl:h-[860px] rounded-t-[36px] sm:rounded-t-[100px] md:rounded-t-[130px] lg:rounded-t-[157px] rounded-b-[20px] md:rounded-b-[40px] overflow-hidden shadow-2xl bg-dark flex flex-col justify-between border border-white/30"
       >
-        <!-- Background Choir Photo (Expanded full width) -->
+        <!-- Background Choir Photo -->
         <img
           :src="heroBg"
           alt="Nusa Mandiri Youth Choir"
-          class="absolute inset-0 w-full h-full object-cover object-[center_35%]"
+          class="absolute inset-0 w-full h-full object-cover object-[60%_35%] sm:object-[center_35%]"
         />
 
-        <!-- Soft Purple Gradient Overlay matching Figma exact transparency -->
+        <!-- Gradient Overlay: stronger on mobile (covers more) -->
         <div
           class="absolute inset-0 pointer-events-none"
-          style="background: linear-gradient(90deg, rgba(109, 15, 200, 0.70) 0%, rgba(109, 15, 200, 0.38) 49%, rgba(109, 15, 200, 0.04) 85%, transparent 100%);"
+          style="background: linear-gradient(90deg, rgba(109,15,200,0.85) 0%, rgba(109,15,200,0.65) 45%, rgba(109,15,200,0.20) 75%, transparent 100%);"
         ></div>
+        <!-- Extra bottom gradient for mobile legibility -->
+        <div class="md:hidden absolute inset-0 pointer-events-none" style="background: linear-gradient(180deg, transparent 40%, rgba(60,8,120,0.55) 100%);"></div>
 
-        <!-- Floating Frosted Navbar (Group 26 style, centered & scaled) -->
-        <div class="relative z-20 pt-7 sm:pt-10 px-4 sm:px-8 w-full flex justify-center">
+        <!-- Navbar -->
+        <div class="relative z-20 pt-5 sm:pt-10 px-4 sm:px-8 w-full flex justify-center">
           <Navbar />
         </div>
 
-        <!-- Hero Content (Single Crisp Text & CTA, expanded max-w for desktop) -->
-        <div class="relative z-10 px-8 sm:px-14 md:px-20 lg:px-28 xl:px-36 py-12 md:py-20 lg:py-24 max-w-4xl xl:max-w-5xl">
+        <!-- Hero Content -->
+        <div class="relative z-10 px-6 sm:px-14 md:px-20 lg:px-28 xl:px-36 py-8 sm:py-14 md:py-20 lg:py-24 max-w-4xl xl:max-w-5xl">
           <h1
-            class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[62px] font-semibold text-white tracking-tight leading-[1.15]"
+            class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[62px] font-bold text-white tracking-tight leading-[1.2]"
           >
-            Menyatukan Suara<br class="hidden sm:inline" />
+            Menyatukan Suara<br />
             Menghidupkan Harmoni
           </h1>
 
-          <p class="mt-5 lg:mt-7 text-sm sm:text-base md:text-lg lg:text-xl text-white/95 max-w-2xl leading-relaxed font-normal">
+          <p class="mt-3 sm:mt-5 lg:mt-7 text-xs sm:text-base md:text-lg lg:text-xl text-white/90 max-w-xs sm:max-w-2xl leading-relaxed font-normal">
             <span class="font-bold text-white">Nusa Mandiri Youth Choir</span> adalah organisasi paduan suara di
             Universitas Nusa Mandiri, wadah mahasiswa untuk menyalurkan kecintaan terhadap musik dan seni vokal.
           </p>
 
-          <div class="mt-8 sm:mt-10 lg:mt-12">
+          <div class="mt-5 sm:mt-10 lg:mt-12">
             <a
               href="#kontak"
-              class="inline-flex items-center justify-center px-8 sm:px-10 py-3.5 sm:py-4 rounded-full bg-white text-primary font-semibold text-sm sm:text-base lg:text-lg shadow-xl hover:bg-light hover:text-dark hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
+              class="inline-flex items-center justify-center px-6 sm:px-10 py-2.5 sm:py-4 rounded-full bg-white text-primary font-semibold text-sm sm:text-base lg:text-lg shadow-xl hover:bg-light hover:text-dark hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
             >
               Hubungi Kami
             </a>
           </div>
         </div>
 
-        <!-- Bottom Base Spacer -->
-        <div class="relative z-10 h-6"></div>
+        <div class="relative z-10 h-4 sm:h-6"></div>
       </div>
     </header>
 
     <!-- ========================================== -->
     <!-- 2. ABOUT SECTION ("Apa Itu NMYC?")         -->
     <!-- ========================================== -->
-    <section id="about" class="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-[#f8f9fa] relative overflow-hidden">
+    <section id="about" class="py-12 md:py-32 px-5 sm:px-6 lg:px-8 bg-[#f8f9fa] relative overflow-hidden">
       <div class="relative max-w-5xl mx-auto text-center flex flex-col items-center">
         <!-- Center Title -->
-        <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary tracking-tight mb-4 lg:mb-6">
+        <h2 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary tracking-tight mb-3 lg:mb-6">
           Apa Itu NMYC?
         </h2>
 
-        <!-- Quotation Icon (Group 24.png) -->
-        <div class="mb-5 lg:mb-6 flex justify-center">
-          <img :src="quoteImg" alt="Quote Accent" class="h-6 lg:h-8 object-contain" />
+        <!-- Quotation Icon -->
+        <div class="mb-4 lg:mb-6 flex justify-center">
+          <img :src="quoteImg" alt="Quote Accent" class="h-5 sm:h-6 lg:h-8 object-contain" />
         </div>
 
         <!-- Description Text -->
-        <p class="text-secondary text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed font-normal max-w-4xl">
+        <p class="text-secondary text-base sm:text-xl md:text-2xl lg:text-3xl leading-relaxed font-normal max-w-4xl">
           Nusa Mandiri Youth Choir (NMYC) merupakan organisasi paduan suara di Universitas Nusa Mandiri yang menjadi
           wadah bagi mahasiswa untuk menyalurkan kecintaan terhadap musik dan seni vokal.
         </p>
 
         <!-- Lilac Accent Bar -->
-        <div class="mt-8 w-28 h-2 rounded-full bg-light"></div>
+        <div class="mt-6 sm:mt-8 w-20 sm:w-28 h-1.5 sm:h-2 rounded-full bg-light"></div>
       </div>
     </section>
 
     <!-- ========================================== -->
     <!-- 3. VISI & MISI SECTION                     -->
     <!-- ========================================== -->
-    <section id="visi-misi" class="py-20 md:py-32 px-4 sm:px-8 lg:px-14 bg-primary text-white relative overflow-hidden">
-      <div class="relative max-w-6xl xl:max-w-7xl mx-auto space-y-12 lg:space-y-16">
-        <!-- CARD 1: Visi -->
-        <div
-          class="rounded-[24px] md:rounded-[36px] border border-white/20 bg-white/5 backdrop-blur-sm p-8 sm:p-12 md:p-16 lg:p-20 shadow-xl"
-        >
-          <h3 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white text-center mb-6 lg:mb-8 tracking-wide">
+    <section id="visi-misi" class="py-10 md:py-32 px-4 sm:px-8 lg:px-14 bg-primary text-white relative overflow-hidden">
+      <!-- Dekorasi note musik (mobile & desktop) -->
+      <div class="absolute top-6 right-4 opacity-20 pointer-events-none">
+        <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M21 3L9 6v2l12-3V3zM5 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm12-3c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+        </svg>
+      </div>
+
+      <div class="relative max-w-6xl xl:max-w-7xl mx-auto space-y-6 md:space-y-12 lg:space-y-16">
+
+        <!-- ====== VISI ====== -->
+        <!-- Mobile: judul + garis + kartu dark -->
+        <div>
+          <!-- Judul Visi -->
+          <h3 class="text-2xl sm:text-5xl lg:text-6xl font-bold text-white text-center mb-2 sm:mb-6 lg:mb-8 tracking-wide">
             Visi
           </h3>
-          <p class="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl text-center max-w-5xl mx-auto leading-relaxed font-normal">
-            “Mewujudkan Nusa Mandiri Youth Choir yang unggul dalam mewadahi minat dan bakat mahasiswa serta membentuk
-            paduan suara yang berkualitas, berkembang, dan berprestasi.”
-          </p>
+          <!-- Garis dekoratif bawah judul (Figma mobile) -->
+          <div class="flex justify-center mb-4 sm:mb-6">
+            <div class="w-10 h-0.5 bg-white/60 rounded-full"></div>
+          </div>
+
+          <!-- Mobile: dark card -->
+          <div class="md:hidden rounded-2xl p-5 shadow-xl" style="background: rgba(30,8,52,0.55);">
+            <p class="text-white text-sm leading-relaxed font-normal text-left">
+              “Mewujudkan Nusa Mandiri Youth Choir yang unggul dalam mewadahi minat dan bakat mahasiswa serta membentuk
+              paduan suara yang berkualitas, berkembang, dan berprestasi.”
+            </p>
+          </div>
+
+          <!-- Desktop: border glass card (lama) -->
+          <div class="hidden md:block rounded-[36px] border border-white/20 bg-white/5 backdrop-blur-sm p-12 md:p-16 lg:p-20 shadow-xl">
+            <p class="text-white text-xl md:text-2xl lg:text-3xl text-center max-w-5xl mx-auto leading-relaxed font-normal">
+              “Mewujudkan Nusa Mandiri Youth Choir yang unggul dalam mewadahi minat dan bakat mahasiswa serta membentuk
+              paduan suara yang berkualitas, berkembang, dan berprestasi.”
+            </p>
+          </div>
         </div>
 
-        <!-- CARD 2: Misi (Sesuai Gambar 1: Tanpa Inner Card, Bersih & Elegan) -->
-        <div
-          class="rounded-[24px] md:rounded-[36px] border border-white/20 bg-white/5 backdrop-blur-sm p-8 sm:p-12 md:p-16 lg:p-20 shadow-xl"
-        >
-          <h3 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white text-center mb-12 lg:mb-16 tracking-wide">
+        <!-- ====== MISI ====== -->
+        <div>
+          <!-- Judul Misi -->
+          <h3 class="text-2xl sm:text-5xl lg:text-6xl font-bold text-white text-center mb-2 sm:mb-6 lg:mb-8 tracking-wide">
             Misi
           </h3>
+          <!-- Garis dekoratif bawah judul (Figma mobile) -->
+          <div class="flex justify-center mb-5 sm:mb-8">
+            <div class="w-10 h-0.5 bg-white/60 rounded-full"></div>
+          </div>
 
-          <!-- Grid of 4 Mission Statements (01 - 04) - Clean Layout matching Gambar 1 -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 text-center">
+          <!-- Mobile: stacked individual cards dengan numbered circle di kiri -->
+          <div class="md:hidden space-y-3">
             <div
               v-for="(item, idx) in missions"
               :key="idx"
-              class="flex flex-col items-center px-2"
+              class="flex items-start gap-4 rounded-2xl p-4 shadow-lg"
+              style="background: rgba(30,8,52,0.55);"
             >
-              <!-- Large Number -->
-              <span class="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white mb-4 lg:mb-6 block tracking-tight">
+              <!-- Numbered circle -->
+              <div class="shrink-0 w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-sm font-bold text-white" style="background: rgba(255,255,255,0.12);">
+                {{ item.number }}
+              </div>
+              <!-- Teks misi -->
+              <p class="text-white text-sm leading-relaxed font-normal">
+                {{ item.text }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Desktop: masing-masing item punya card sendiri -->
+          <div class="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            <div
+              v-for="(item, idx) in missions"
+              :key="idx"
+              class="rounded-[24px] border border-white/20 bg-white/5 backdrop-blur-sm p-8 lg:p-10 shadow-xl flex flex-col items-center text-center transition-all duration-300 hover:bg-white/10 hover:shadow-2xl hover:-translate-y-1"
+            >
+              <!-- Nomor -->
+              <span class="text-4xl lg:text-5xl font-semibold text-white mb-5 block tracking-tight">
                 {{ item.number }}
               </span>
-              <!-- Statement Text -->
-              <p class="text-white text-sm sm:text-base lg:text-[16px] xl:text-[17px] leading-relaxed font-normal text-center">
+              <!-- Teks -->
+              <p class="text-white text-sm lg:text-[15px] xl:text-[16px] leading-relaxed font-normal">
                 {{ item.text }}
               </p>
             </div>
           </div>
         </div>
+
       </div>
     </section>
 

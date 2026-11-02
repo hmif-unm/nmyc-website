@@ -2,15 +2,18 @@
   <div class="w-full flex flex-col items-center">
     <!-- Frosted Glass Pill Navbar (sama style dengan LandingPage) -->
     <nav
-      class="w-full max-w-[897px] lg:max-w-[980px] xl:max-w-[1040px] h-[64px] sm:h-[72px] md:h-[78px] lg:h-[82px] rounded-full px-5 sm:px-8 md:px-10 shadow-lg flex items-center justify-between border border-white/30 backdrop-blur-md text-white"
+      class="w-full max-w-[360px] md:max-w-[897px] lg:max-w-[980px] xl:max-w-[1040px] h-[56px] md:h-[72px] lg:h-[82px] rounded-full px-4 md:px-10 shadow-lg flex items-center justify-between border border-white/30 backdrop-blur-md text-white"
       style="background: rgba(255, 255, 255, 0.16); box-shadow: 0 4px 28px rgba(0, 0, 0, 0.12);"
     >
       <!-- Logo Badge -->
       <a href="/#hero" @click.prevent="navigateTo('#hero')" class="shrink-0 flex items-center group cursor-pointer">
-        <div class="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full bg-white flex items-center justify-center p-1 shadow-md overflow-hidden transition-transform group-hover:scale-105">
+        <div class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-white flex items-center justify-center p-1 shadow-md overflow-hidden transition-transform group-hover:scale-105">
           <img :src="logoImg" alt="NMYC Logo" class="w-full h-full object-contain" />
         </div>
       </a>
+
+      <!-- Nama tengah (mobile only) -->
+      <span class="md:hidden text-base font-bold tracking-widest text-white select-none">NMYC</span>
 
       <!-- Desktop Navigation Links -->
       <ul class="hidden md:flex items-center gap-6 lg:gap-10 text-sm lg:text-[15px] xl:text-base font-medium tracking-wide">
