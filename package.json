@@ -14,14 +14,25 @@
   "type": "commonjs",
   "main": "backend/src/server.ts",
   "scripts": {
+    "dev:backend": "bun --watch backend/src/server.ts",
+    "dev:frontend": "cd frontend && bun run dev",
+    "build:frontend": "cd frontend && bun run build",
+    "build": "bun run build:frontend",
+    "start": "bun backend/src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@fastify/cors": "^11.4.0",
+    "@fastify/jwt": "^10.2.7",
+    "fastify": "^5.12.8",
     "vue-router": "^5.4.0"
   },
   "devDependencies": {
+    "@types/node": "^26.6.6",
     "autoprefixer": "^10.6.1",
     "postcss": "^8.5.31",
-    "tailwindcss": "^3.4.19"
+    "tailwindcss": "^3.4.19",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   }
 }
