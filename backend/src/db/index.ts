@@ -61,7 +61,7 @@ export function initDatabase() {
       {
         title: 'Lomba Peksimida - Solo Pop',
         category: 'Lomba',
-        image: '/dokumentasi-assets/Lomba Peksimida - Solo Pop.jpg',
+        image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/lomba/Lomba%20Peksimida%20-%20Solo%20Pop.jpg',
         description: 'Partisipasi kontingen NMYC dalam ajang kompetisi Peksimida tangkai Solo Pop membawakan aransemen vokal terbaik.',
         full_description: 'Partisipasi kontingen Nusa Mandiri Youth Choir (NMYC) dalam ajang bergengsi Peksimida tangkai vokal Solo Pop. Penampilan ini menampilkan teknik vokal prima, penjiwaan mendalam, dan aransemen yang memukau dewan juri serta penonton.',
         created_at: '2024-08-10T10:00:00Z'
@@ -69,7 +69,7 @@ export function initDatabase() {
       {
         title: 'Lomba Seleksi Daerah',
         category: 'Lomba',
-        image: '/dokumentasi-assets/Sertijab.jpg',
+        image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/general/Sertijab.jpg',
         description: 'Dokumentasi NMYC pada ajang seleksi daerah, menampilkan performa paduan suara terbaik.',
         full_description: 'Nusa Mandiri Youth Choir mengikuti ajang seleksi paduan suara tingkat daerah dengan penuh dedikasi dan kekompakan tim vokal.',
         created_at: '2024-09-12T10:00:00Z'
@@ -77,7 +77,7 @@ export function initDatabase() {
       {
         title: 'Lomba di Kota Depok',
         category: 'Lomba',
-        image: '/dokumentasi-assets/Penampilan Vocal Grub di wisuda ke 37.jpg',
+        image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Penampilan%20Vocal%20Grub%20di%20wisuda%20ke%2037.jpg',
         description: 'Penampilan tim vocal group NMYC dalam festival paduan suara di Kota Depok.',
         full_description: 'Kompetisi paduan suara dan vocal group di tingkat Kota Depok yang mempertemukan berbagai kelompok paduan suara mahasiswa terbaik.',
         created_at: '2025-01-15T10:00:00Z'
@@ -85,7 +85,7 @@ export function initDatabase() {
       {
         title: 'Lomba Tingkat Depok',
         category: 'Lomba',
-        image: '/dokumentasi-assets/Penampilan Solo Pria di Wisuda ke 40.jpg',
+        image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Penampilan%20Solo%20Pria%20di%20Wisuda%20ke%2040.jpg',
         description: 'Penampilan solois pria NMYC dalam ajang perlombaan vokal tingkat daerah di Depok.',
         full_description: 'Solois pria NMYC tampil memukau membawakan lagu perlombaan dengan jangkauan vokal dan teknik vokal prima di hadapan dewan juri.',
         created_at: '2025-02-20T10:00:00Z'
@@ -93,7 +93,7 @@ export function initDatabase() {
       {
         title: 'Tampil di Serasi 2025',
         category: 'Penampilan',
-        image: '/dokumentasi-assets/Tampil Pada saat Serasi 2025.jpg',
+        image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20Pada%20saat%20Serasi%202025.jpg',
         description: 'Meriahkan gelaran Seni dan Apresiasi Budaya (Serasi) 2025 dengan penampilan paduan suara yang kompak dan energik.',
         full_description: 'NMYC mempersembahkan serangkaian lagu harmoni nusantara kontemporer dalam acara tahunan Pagelaran Seni dan Budaya (Serasi) 2025.',
         created_at: '2025-05-18T10:00:00Z'
@@ -101,7 +101,7 @@ export function initDatabase() {
       {
         title: 'Tampil di Serasi 2026',
         category: 'Penampilan',
-        image: '/dokumentasi-assets/Tampil di Serasi 2026.jpg',
+        image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20di%20Serasi%202026.jpg',
         description: 'Penampilan spektakuler NMYC pada ajang Serasi 2026 dengan kostum ungu kebanggaan dan formasi lengkap.',
         full_description: 'Penampilan spektakuler NMYC pada gelaran Serasi 2026 dengan kostum ungu identitas kebanggaan organisasi dan formasi vokal yang solid.',
         created_at: '2026-03-01T10:00:00Z'
@@ -109,7 +109,7 @@ export function initDatabase() {
       {
         title: 'Penampilan di JIF Sebelum Wisuda',
         category: 'Penampilan',
-        image: '/dokumentasi-assets/Tampil di JIF sebelum Wisuda.jpg',
+        image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20di%20JIF%20sebelum%20Wisuda.jpg',
         description: 'Pertunjukan musik vokal di panggung Jakarta Islamic Fair (JIF) menjelang agenda seremoni wisuda kampus.',
         full_description: 'Tim NMYC tampil memukau mengisi panggung Jakarta Islamic Fair (JIF) dengan membawakan lagu-lagu harmoni penuh khidmat.',
         created_at: '2024-10-05T10:00:00Z'
@@ -117,7 +117,7 @@ export function initDatabase() {
       {
         title: 'Liwetan bersama Seluruh Anggota NMYC',
         category: 'Kegiatan',
-        image: '/dokumentasi-assets/Liwetan bersama seluruh anggota NMYC.jpg',
+        image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/general/Liwetan%20bersama%20seluruh%20anggota%20NMYC.jpg',
         description: 'Tradisi santap bersama beralaskan daun pisang untuk mempererat tali persaudaraan dan kekeluargaan seluruh anggota.',
         full_description: 'Kegiatan santap bersama (liwetan) seluruh keluarga besar Nusa Mandiri Youth Choir yang diselenggarakan untuk mempererat rasa kekeluargaan dan keakraban antar-angkatan.',
         created_at: '2025-07-22T10:00:00Z'
@@ -125,7 +125,7 @@ export function initDatabase() {
       {
         title: 'Penampilan Solo Wanita di Wisuda ke-40',
         category: 'Penampilan',
-        image: '/dokumentasi-assets/Penampilan Solo Wanita di wisuda ke 40.jpg',
+        image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Penampilan%20Solo%20Wanita%20di%20wisuda%20ke%2040.jpg',
         description: 'Penampilan vokal solo wanita memukau para wisudawan dengan teknik vokal soprano yang anggun dan berkarakter.',
         full_description: 'Penampilan solo wanita dari anggota berbakat NMYC pada wisuda ke-40 Universitas Nusa Mandiri dengan penghayatan mendalam.',
         created_at: '2024-11-14T10:00:00Z'
@@ -133,7 +133,7 @@ export function initDatabase() {
       {
         title: 'Foto Latihan Rutin',
         category: 'Latihan',
-        image: '/dokumentasi-assets/Foto Latihan.jpg',
+        image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/latihan/Foto%20Latihan.jpg',
         description: 'Sesi latihan teknik pernapasan, intonasi, dinamika vokal, dan kekompakan paduan suara di bawah bimbingan pelatih.',
         full_description: 'Sesi latihan rutin berkala anggota NMYC meliputi olah vokal, harmonisasi notasi per seksi suara (SATB), dan persiapan repertoar lagu.',
         created_at: '2025-04-10T10:00:00Z'
@@ -141,7 +141,7 @@ export function initDatabase() {
       {
         title: 'Tampil Pada Saat Event',
         category: 'Penampilan',
-        image: '/dokumentasi-assets/Tampil pada saat event.jpg',
+        image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20pada%20saat%20event.jpg',
         description: 'Ajang unjuk kemampuan vokal NMYC dalam berbagai pagelaran event kolaboratif kampus.',
         full_description: 'Dokumentasi NMYC saat mengisi berbagai event resmi kampus maupun eksternal dengan performa paduan suara yang solid.',
         created_at: '2024-06-25T10:00:00Z'
@@ -163,7 +163,26 @@ export function initDatabase() {
         item.created_at
       )
     }
-    console.log('📸 Database SQLite: 11 data awal galeri kegiatan NMYC berhasil di-seed.')
+    console.log(`🖼️ Database SQLite: Berhasil menambahkan ${seedItems.length} dokumentasi galeri resmi dari GitHub NMYC.`)
+  }
+
+  // Migrasi otomatis: konversi path lokal ke URL resmi GitHub jika database sudah ada
+  const updateGitHubStmt = db.prepare('UPDATE galleries SET image = ? WHERE image = ?')
+  const githubMappings: [string, string][] = [
+    ['/dokumentasi-assets/Lomba Peksimida - Solo Pop.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/lomba/Lomba%20Peksimida%20-%20Solo%20Pop.jpg'],
+    ['/dokumentasi-assets/Sertijab.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/general/Sertijab.jpg'],
+    ['/dokumentasi-assets/Penampilan Vocal Grub di wisuda ke 37.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Penampilan%20Vocal%20Grub%20di%20wisuda%20ke%2037.jpg'],
+    ['/dokumentasi-assets/Penampilan Solo Pria di Wisuda ke 40.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Penampilan%20Solo%20Pria%20di%20Wisuda%20ke%2040.jpg'],
+    ['/dokumentasi-assets/Tampil Pada saat Serasi 2025.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20Pada%20saat%20Serasi%202025.jpg'],
+    ['/dokumentasi-assets/Tampil di Serasi 2026.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20di%20Serasi%202026.jpg'],
+    ['/dokumentasi-assets/Tampil di JIF sebelum Wisuda.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20di%20JIF%20sebelum%20Wisuda.jpg'],
+    ['/dokumentasi-assets/Liwetan bersama seluruh anggota NMYC.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/general/Liwetan%20bersama%20seluruh%20anggota%20NMYC.jpg'],
+    ['/dokumentasi-assets/Penampilan Solo Wanita di wisuda ke 40.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Penampilan%20Solo%20Wanita%20di%20wisuda%20ke%2040.jpg'],
+    ['/dokumentasi-assets/Foto Latihan.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/latihan/Foto%20Latihan.jpg'],
+    ['/dokumentasi-assets/Tampil pada saat event.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20pada%20saat%20event.jpg'],
+  ]
+  for (const [oldPath, newUrl] of githubMappings) {
+    updateGitHubStmt.run(newUrl, oldPath)
   }
 }
 
