@@ -72,7 +72,39 @@
     <!-- ===================================== -->
     <section class="relative z-10 px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16 max-w-4xl lg:max-w-5xl xl:max-w-[1040px] mx-auto">
       <div class="relative space-y-4 sm:space-y-5">
-        <transition-group name="card-fade" tag="div" class="relative space-y-4 sm:space-y-5">
+        <!-- Loading State Skeleton -->
+        <div v-if="isLoading" class="space-y-4 sm:space-y-5">
+          <div
+            v-for="n in 3"
+            :key="n"
+            class="rounded-2xl sm:rounded-3xl bg-white/20 backdrop-blur-md p-6 h-52 sm:h-56 animate-pulse border border-white/30 flex items-center justify-center text-white/80"
+          >
+            <div class="flex items-center gap-3 text-sm font-medium">
+              <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+              Memuat data dokumentasi dari server...
+            </div>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div v-else-if="isError" class="text-center py-16 bg-white/10 rounded-3xl backdrop-blur-sm border border-white/20">
+          <svg class="w-16 h-16 mx-auto mb-4 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <p class="text-white text-base font-medium mb-3">Gagal memuat dokumentasi kegiatan dari backend.</p>
+          <button
+            @click="fetchGalleries"
+            class="px-6 py-2.5 rounded-full bg-white text-primary text-xs sm:text-sm font-semibold hover:bg-light transition-all shadow-lg active:scale-95 cursor-pointer"
+          >
+            Coba Lagi
+          </button>
+        </div>
+
+        <!-- Gallery Cards List -->
+        <transition-group v-else name="card-fade" tag="div" class="relative space-y-4 sm:space-y-5">
           <div
             v-for="(item, idx) in paginatedItems"
             :key="item.id"
@@ -123,14 +155,14 @@
 
                 <!-- Footer Kartu: Tanggal & Read More -->
                 <div class="mt-2.5 sm:mt-3 pt-2.5 sm:pt-3 border-t border-gray-100 flex items-center justify-between">
-                  <span class="text-xs text-gray-400 flex items-center gap-1.5">
-                    <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <span class="text-xs text-gray-400 flex items-center gap-1.5 font-medium">
+                    <svg class="w-3.5 h-3.5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    {{ item.date }}
+                    {{ formatDate(item.createdAt) }}
                   </span>
                   <button
-                    class="text-xs sm:text-sm font-semibold text-primary hover:text-secondary flex items-center gap-1.5 transition-all duration-200 group/btn cursor-pointer"
+                    class="text-xs sm:text-sm font-semibold text-primary hover:text-secondary flex items-center gap-1.5 transition-all duration-200 group/btn cursor-pointer shrink-0"
                     @click.stop="openDetail(item)"
                   >
                     Read More
@@ -145,7 +177,7 @@
         </transition-group>
 
         <!-- Empty State -->
-        <div v-if="filteredItems.length === 0" class="text-center py-20 bg-white/10 rounded-3xl backdrop-blur-sm border border-white/20">
+        <div v-if="!isLoading && !isError && filteredItems.length === 0" class="text-center py-20 bg-white/10 rounded-3xl backdrop-blur-sm border border-white/20">
           <svg class="w-16 h-16 mx-auto mb-4 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
@@ -249,11 +281,11 @@
               {{ selectedItem.category }}
             </span>
             <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2 leading-snug">{{ selectedItem.title }}</h2>
-            <p class="text-gray-400 text-xs sm:text-sm mb-4 flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <p class="text-gray-400 text-xs sm:text-sm mb-4 flex items-center gap-1.5 font-medium">
+              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              {{ selectedItem.date }}
+              {{ formatDate(selectedItem.createdAt) }}
             </p>
             <p class="text-gray-600 text-sm sm:text-base leading-relaxed">{{ selectedItem.fullDescription }}</p>
           </div>
@@ -267,123 +299,63 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import GalleryNavbar from '@/components/layout/GalleryNavbar.vue'
 
-// Import asset foto dokumentasi
-import fotoLatihan from '@/assets/dokumentasi-assets/Foto Latihan.jpg'
-import fotoLiwetan from '@/assets/dokumentasi-assets/Liwetan bersama seluruh anggota NMYC.jpg'
-import fotoPeksimida from '@/assets/dokumentasi-assets/Lomba Peksimida - Solo Pop.jpg'
-import fotoSoloPria from '@/assets/dokumentasi-assets/Penampilan Solo Pria di Wisuda ke 40.jpg'
-import fotoSoloWanita from '@/assets/dokumentasi-assets/Penampilan Solo Wanita di wisuda ke 40.jpg'
-import fotoVocalGrub from '@/assets/dokumentasi-assets/Penampilan Vocal Grub di wisuda ke 37.jpg'
-import fotoSertijab from '@/assets/dokumentasi-assets/Sertijab.jpg'
-import fotoSerasi2025 from '@/assets/dokumentasi-assets/Tampil Pada saat Serasi 2025.jpg'
-import fotoJIF from '@/assets/dokumentasi-assets/Tampil di JIF sebelum Wisuda.jpg'
-import fotoSerasi2026 from '@/assets/dokumentasi-assets/Tampil di Serasi 2026.jpg'
-import fotoEvent from '@/assets/dokumentasi-assets/Tampil pada saat event.jpg'
+// ========================
+// STATE GALERI DARI BACKEND
+// ========================
+const allItems = ref([])
+const isLoading = ref(true)
+const isError = ref(false)
+
+async function fetchGalleries() {
+  isLoading.value = true
+  isError.value = false
+  try {
+    const res = await fetch('/api/gallery')
+    if (!res.ok) throw new Error('Gagal memuat galeri dari backend')
+    const json = await res.json()
+    if (json.success && Array.isArray(json.data)) {
+      allItems.value = json.data
+    } else {
+      throw new Error('Format data tidak sesuai')
+    }
+  } catch (err) {
+    console.error('Error fetching gallery:', err)
+    isError.value = true
+  } finally {
+    isLoading.value = false
+  }
+}
 
 // ========================
-// DATA GALERI
+// FORMAT TANGGAL & WAKTU (WIB)
 // ========================
-const allItems = [
-  {
-    id: 1,
-    title: 'Lomba Peksimida - Solo Pop',
-    category: 'Lomba',
-    date: '2024',
-    image: fotoPeksimida,
-    description: 'Partisipasi kontingen NMYC dalam ajang kompetisi Peksimida tangkai Solo Pop membawakan aransemen vokal terbaik.',
-    fullDescription: 'Partisipasi kontingen Nusa Mandiri Youth Choir (NMYC) dalam ajang bergengsi Peksimida tangkai vokal Solo Pop. Penampilan ini menampilkan teknik vokal prima, penjiwaan mendalam, dan aransemen yang memukau dewan juri serta penonton.'
-  },
-  {
-    id: 2,
-    title: 'Lomba Seleksi Daerah',
-    category: 'Lomba',
-    date: '2024',
-    image: fotoSertijab,
-    description: 'Dokumentasi NMYC pada ajang seleksi daerah, menampilkan performa paduan suara terbaik.',
-    fullDescription: 'Nusa Mandiri Youth Choir mengikuti ajang seleksi paduan suara tingkat daerah dengan penuh dedikasi dan kekompakan tim vokal.'
-  },
-  {
-    id: 3,
-    title: 'Lomba di Kota Depok',
-    category: 'Lomba',
-    date: '2025',
-    image: fotoVocalGrub,
-    description: 'Penampilan tim vocal group NMYC dalam festival paduan suara di Kota Depok.',
-    fullDescription: 'Kompetisi paduan suara dan vocal group di tingkat Kota Depok yang mempertemukan berbagai kelompok paduan suara mahasiswa terbaik.'
-  },
-  {
-    id: 4,
-    title: 'Lomba Tingkat Depok',
-    category: 'Lomba',
-    date: '2025',
-    image: fotoSoloPria,
-    description: 'Penampilan solois pria NMYC dalam ajang perlombaan vokal tingkat daerah di Depok.',
-    fullDescription: 'Solois pria NMYC tampil memukau membawakan lagu perlombaan dengan jangkauan vokal dan teknik vokal prima di hadapan dewan juri.'
-  },
-  {
-    id: 5,
-    title: 'Tampil di Serasi 2025',
-    category: 'Penampilan',
-    date: '2025',
-    image: fotoSerasi2025,
-    description: 'Meriahkan gelaran Seni dan Apresiasi Budaya (Serasi) 2025 dengan penampilan paduan suara yang kompak dan energik.',
-    fullDescription: 'NMYC mempersembahkan serangkaian lagu harmoni nusantara kontemporer dalam acara tahunan Pagelaran Seni dan Budaya (Serasi) 2025.'
-  },
-  {
-    id: 6,
-    title: 'Tampil di Serasi 2026',
-    category: 'Penampilan',
-    date: '2026',
-    image: fotoSerasi2026,
-    description: 'Penampilan spektakuler NMYC pada ajang Serasi 2026 dengan kostum ungu kebanggaan dan formasi lengkap.',
-    fullDescription: 'Penampilan spektakuler NMYC pada gelaran Serasi 2026 dengan kostum ungu identitas kebanggaan organisasi dan formasi vokal yang solid.'
-  },
-  {
-    id: 7,
-    title: 'Penampilan di JIF Sebelum Wisuda',
-    category: 'Penampilan',
-    date: '2024',
-    image: fotoJIF,
-    description: 'Pertunjukan musik vokal di panggung Jakarta Islamic Fair (JIF) menjelang agenda seremoni wisuda kampus.',
-    fullDescription: 'Tim NMYC tampil memukau mengisi panggung Jakarta Islamic Fair (JIF) dengan membawakan lagu-lagu harmoni penuh khidmat.'
-  },
-  {
-    id: 8,
-    title: 'Liwetan bersama Seluruh Anggota NMYC',
-    category: 'Kegiatan',
-    date: '2025',
-    image: fotoLiwetan,
-    description: 'Tradisi santap bersama beralaskan daun pisang untuk mempererat tali persaudaraan dan kekeluargaan seluruh anggota.',
-    fullDescription: 'Kegiatan santap bersama (liwetan) seluruh keluarga besar Nusa Mandiri Youth Choir yang diselenggarakan untuk mempererat rasa kekeluargaan dan keakraban antar-angkatan.'
-  },
-  {
-    id: 9,
-    title: 'Penampilan Solo Wanita di Wisuda ke-40',
-    category: 'Penampilan',
-    date: '2024',
-    image: fotoSoloWanita,
-    description: 'Penampilan vokal solo wanita memukau para wisudawan dengan teknik vokal soprano yang anggun dan berkarakter.',
-    fullDescription: 'Penampilan solo wanita dari anggota berbakat NMYC pada wisuda ke-40 Universitas Nusa Mandiri dengan penghayatan mendalam.'
-  },
-  {
-    id: 10,
-    title: 'Foto Latihan Rutin',
-    category: 'Latihan',
-    date: '2025',
-    image: fotoLatihan,
-    description: 'Sesi latihan teknik pernapasan, intonasi, dinamika vokal, dan kekompakan paduan suara di bawah bimbingan pelatih.',
-    fullDescription: 'Sesi latihan rutin berkala anggota NMYC meliputi olah vokal, harmonisasi notasi per seksi suara (SATB), dan persiapan repertoar lagu.'
-  },
-  {
-    id: 11,
-    title: 'Tampil Pada Saat Event',
-    category: 'Penampilan',
-    date: '2024',
-    image: fotoEvent,
-    description: 'Ajang unjuk kemampuan vokal NMYC dalam berbagai pagelaran event kolaboratif kampus.',
-    fullDescription: 'Dokumentasi NMYC saat mengisi berbagai event resmi kampus maupun eksternal dengan performa paduan suara yang solid.'
-  },
-]
+function formatDate(dateStr) {
+  if (!dateStr) return '-'
+  try {
+    const d = new Date(dateStr)
+    if (isNaN(d.getTime())) return dateStr
+
+    // Format tanggal Indonesia: contoh "19 Januari 2026"
+    const dateFormatted = new Intl.DateTimeFormat('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'Asia/Jakarta'
+    }).format(d)
+
+    // Format jam 24-jam: contoh "10:00"
+    const timeFormatted = new Intl.DateTimeFormat('id-ID', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'Asia/Jakarta'
+    }).format(d).replace('.', ':')
+
+    return `${dateFormatted}, ${timeFormatted} WIB`
+  } catch (err) {
+    return dateStr
+  }
+}
 
 // ========================
 // FILTER KATEGORI
@@ -421,8 +393,8 @@ const ITEMS_PER_PAGE = 5
 const currentPage = ref(1)
 
 const filteredItems = computed(() => {
-  if (activeCategory.value === 'Semua') return allItems
-  return allItems.filter(item => item.category === activeCategory.value)
+  if (activeCategory.value === 'Semua') return allItems.value
+  return allItems.value.filter(item => item.category === activeCategory.value)
 })
 
 const totalPages = computed(() => Math.ceil(filteredItems.value.length / ITEMS_PER_PAGE))
@@ -461,6 +433,7 @@ function handleKeydown(e) {
 }
 
 onMounted(() => {
+  fetchGalleries()
   window.addEventListener('keydown', handleKeydown)
 })
 

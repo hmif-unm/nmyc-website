@@ -42,12 +42,21 @@
             Universitas Nusa Mandiri, wadah mahasiswa untuk menyalurkan kecintaan terhadap musik dan seni vokal.
           </p>
 
-          <div class="mt-5 sm:mt-10 lg:mt-12">
+          <div class="mt-5 sm:mt-10 lg:mt-12 flex flex-wrap items-center gap-3 sm:gap-4">
             <a
               href="#kontak"
               class="inline-flex items-center justify-center px-6 sm:px-10 py-2.5 sm:py-4 rounded-full bg-white text-primary font-semibold text-sm sm:text-base lg:text-lg shadow-xl hover:bg-light hover:text-dark hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
             >
               Hubungi Kami
+            </a>
+
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://forms.gle/xapMfDJFtLt39a727"
+              class="inline-flex items-center justify-center px-6 sm:px-10 py-2.5 sm:py-4 rounded-full border-2 border-white text-white font-semibold text-sm sm:text-base lg:text-lg hover:bg-white hover:text-primary shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
+            >
+              Daftar Sekarang
             </a>
           </div>
         </div>
@@ -229,7 +238,7 @@
                     </p>
                   </div>
                   <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                    <img :src="leader.avatar" :alt="leader.name" class="w-full h-full object-cover" />
+                    <img :src="leader.avatar" :alt="leader.name" class="w-full h-full object-cover" @error="$event.target.src = defaultAvatar" />
                   </div>
                 </div>
               </div>
@@ -270,7 +279,7 @@
                     </p>
                   </div>
                   <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                    <img :src="viceLeader.avatar" :alt="viceLeader.name" class="w-full h-full object-cover" />
+                    <img :src="viceLeader.avatar" :alt="viceLeader.name" class="w-full h-full object-cover" @error="$event.target.src = defaultAvatar" />
                   </div>
                 </div>
               </div>
@@ -317,7 +326,7 @@
                         </p>
                       </div>
                       <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                        <img :src="secretary1.avatar" :alt="secretary1.name" class="w-full h-full object-cover" />
+                        <img :src="secretary1.avatar" :alt="secretary1.name" class="w-full h-full object-cover" @error="$event.target.src = defaultAvatar" />
                       </div>
                     </div>
                   </div>
@@ -389,7 +398,7 @@
                       </p>
                     </div>
                     <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                      <img :src="secretary1.avatar" :alt="secretary1.name" class="w-full h-full object-cover" />
+                      <img :src="secretary1.avatar" :alt="secretary1.name" class="w-full h-full object-cover" @error="$event.target.src = defaultAvatar" />
                     </div>
                   </div>
                 </div>
@@ -504,7 +513,8 @@
             </div>
 
             <p class="text-white/80 text-sm leading-relaxed max-w-xs font-normal">
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+              Bukan cuma tentang bernyanyi, tapi juga tentang kebersamaan, pengalaman, dan cerita yang tercipta di setiap perjalanan.
+              <br><br>NMYC – We Are Family!
             </p>
 
             <!-- Social Media Icons (TikTok, Instagram, YouTube) -->
@@ -563,16 +573,16 @@
             <h4 class="text-lg font-bold text-white mb-5 tracking-wide">Kontak</h4>
             <ul class="space-y-4 text-sm text-white/80">
               <li class="flex items-start gap-2.5">
-                <span>[ Alamat ]</span>
+                <span>Universitas Nusa Mandiri</span>
               </li>
               <li class="flex items-center gap-2.5">
-                <a href="mailto:email@email.com" class="hover:text-light transition-colors">
-                  [ email@email.com ]
+                <a href="mailto:nusamandiriyouthchoir@gmail.com" class="hover:text-light transition-colors">
+                  nusamandiriyouthchoir@gmail.com
                 </a>
               </li>
               <li class="flex items-center gap-2.5">
-                <a href="tel:0812345678" class="hover:text-light transition-colors">
-                  [ 0812345678 ]
+                <a href="https://wa.me/628568767674" class="hover:text-light transition-colors" target="_blank" rel="noopener noreferrer">
+                  +628568767674
                 </a>
               </li>
             </ul>
@@ -586,8 +596,10 @@
             </p>
             <div class="pt-2">
               <a
-                href="mailto:email@email.com"
+                href="https://wa.me/628568767674"
                 class="inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-white text-primary font-semibold text-sm shadow-lg hover:bg-light hover:text-dark transition-all duration-300 transform hover:-translate-y-0.5"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 Hubungi Kami
               </a>
@@ -675,21 +687,21 @@ const missions = [
 
 // Structure Members
 const leader = {
-  name: 'Agil Alexander',
+  name: 'Naila Salsabila',
   role: 'Ketua Umum',
-  avatar: defaultAvatar
+  avatar: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/struktur_organisasi/Naila%20Salsabila.JPG'
 }
 
 const viceLeader = {
-  name: 'Agil Alexander',
+  name: 'Salma Ananda',
   role: 'Wakil Ketua Umum',
-  avatar: defaultAvatar
+  avatar: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/struktur_organisasi/Salma%20Ananda.JPG'
 }
 
 const secretary1 = {
-  name: 'Agil Alexander',
+  name: 'Nazua Qeisha G',
   role: 'Sekretaris 1',
-  avatar: defaultAvatar
+  avatar: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/struktur_organisasi/Nazua%20Qeisha%20G.JPG'
 }
 
 const secretary2 = {
@@ -699,16 +711,16 @@ const secretary2 = {
 }
 
 const treasurer = {
-  name: 'Agil Alexander',
+  name: 'Rahmah',
   role: 'Bendahara',
   avatar: defaultAvatar
 }
 
 // Social Links
 const socialLinks = [
-  { name: 'TikTok', url: 'https://tiktok.com' },
-  { name: 'Instagram', url: 'https://instagram.com' },
-  { name: 'YouTube', url: 'https://youtube.com' }
+  { name: 'TikTok', url: 'https://www.tiktok.com/@nusamandiriyc' },
+  { name: 'Instagram', url: 'https://www.instagram.com/nusamandiriyc' },
+  { name: 'YouTube', url: 'https://www.youtube.com/@nusamandiriyc' }
 ]
 </script>
 

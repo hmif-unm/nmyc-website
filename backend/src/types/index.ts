@@ -4,7 +4,6 @@ export interface GalleryItem {
   id: number
   title: string
   category: GalleryCategory
-  date: string
   image: string
   description: string
   fullDescription: string

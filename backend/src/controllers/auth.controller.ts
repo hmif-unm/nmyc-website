@@ -2,34 +2,32 @@ import type { FastifyRequest, FastifyReply } from 'fastify'
 import { userStore } from '../data/user.store'
 
 interface LoginBody {
-  username?: string
-  password?: string
+  key?: string
 }
 
 export async function loginHandler(request: FastifyRequest<{ Body: LoginBody }>, reply: FastifyReply) {
-  const { username, password } = request.body || {}
+  const { key } = request.body || {}
 
-  if (!username || !password) {
+  if (!key || typeof key !== 'string' || !key.trim()) {
     return reply.status(400).send({
       success: false,
-      message: 'Username dan password wajib diisi.'
+      message: 'Admin Access Key wajib diisi.'
     })
   }
 
-  const user = userStore.verifyCredentials(username.trim(), password)
-  if (!user) {
+  const isValid = userStore.verifyKey(key.trim())
+  if (!isValid) {
     return reply.status(401).send({
       success: false,
-      message: 'Username atau password salah.'
+      message: 'Access Key salah atau tidak valid.'
     })
   }
 
   // Buat JWT Token berlaku selama 7 hari
   const token = await reply.jwtSign(
     {
-      id: user.id,
-      username: user.username,
-      role: user.role
+      role: 'admin',
+      issuedAt: new Date().toISOString()
     },
     { expiresIn: '7d' }
   )
@@ -38,19 +36,26 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginBody }>,
     success: true,
     message: 'Login berhasil.',
     token,
-    user
+    admin: {
+      role: 'admin',
+      name: 'Administrator NMYC'
+    }
   })
 }
 
 export async function meHandler(request: FastifyRequest, reply: FastifyReply) {
-  const jwtPayload = request.user as { id: string; username: string; role: string }
-  const admin = userStore.getAdmin()
-
   return reply.send({
     success: true,
-    user: {
-      ...admin,
-      ...jwtPayload
+    admin: {
+      role: 'admin',
+      name: 'Administrator NMYC'
     }
+  })
+}
+
+export async function logoutHandler(_request: FastifyRequest, reply: FastifyReply) {
+  return reply.send({
+    success: true,
+    message: 'Logout berhasil.'
   })
 }

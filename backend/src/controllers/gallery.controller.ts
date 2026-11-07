@@ -14,10 +14,34 @@ interface GalleryParams {
 interface GalleryBody {
   title: string
   category: GalleryCategory
-  date: string
   image: string
   description: string
   fullDescription?: string
+  createdAt?: string
+}
+
+// Otomatis ubah link GitHub (blob / web view) menjadi direct image URL
+function normalizeGitHubUrl(url?: string): string {
+  if (!url || typeof url !== 'string') return ''
+  const cleanUrl = url.trim()
+
+  const githubBlobRegex = /^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)$/i
+  const matchBlob = cleanUrl.match(githubBlobRegex)
+  if (matchBlob) {
+    return `https://raw.githubusercontent.com/${matchBlob[1]}/${matchBlob[2]}/${matchBlob[3]}/${matchBlob[4]}`
+  }
+
+  const githubRawRegex = /^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/raw\/([^/]+)\/(.+)$/i
+  const matchRaw = cleanUrl.match(githubRawRegex)
+  if (matchRaw) {
+    return `https://raw.githubusercontent.com/${matchRaw[1]}/${matchRaw[2]}/${matchRaw[3]}/${matchRaw[4]}`
+  }
+
+  if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://') && !cleanUrl.startsWith('/')) {
+    return `https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/${cleanUrl}`
+  }
+
+  return cleanUrl
 }
 
 export async function getGalleriesHandler(
@@ -64,7 +88,7 @@ export async function createGalleryHandler(
   request: FastifyRequest<{ Body: GalleryBody }>,
   reply: FastifyReply
 ) {
-  const { title, category, date, image, description, fullDescription } = request.body || {}
+  const { title, category, image, description, fullDescription, createdAt } = request.body || {}
 
   if (!title || !category || !image || !description) {
     return reply.status(400).send({
@@ -84,10 +108,10 @@ export async function createGalleryHandler(
   const newItem = galleryStore.create({
     title: title.trim(),
     category,
-    date: date || new Date().getFullYear().toString(),
-    image: image.trim(),
+    image: normalizeGitHubUrl(image),
     description: description.trim(),
-    fullDescription: (fullDescription || description).trim()
+    fullDescription: (fullDescription || description).trim(),
+    ...(createdAt ? { createdAt } : {})
   })
 
   return reply.status(201).send({
@@ -109,7 +133,12 @@ export async function updateGalleryHandler(
     })
   }
 
-  const updatedItem = galleryStore.update(id, request.body)
+  const payload = { ...request.body }
+  if (payload.image) {
+    payload.image = normalizeGitHubUrl(payload.image)
+  }
+
+  const updatedItem = galleryStore.update(id, payload)
   if (!updatedItem) {
     return reply.status(404).send({
       success: false,

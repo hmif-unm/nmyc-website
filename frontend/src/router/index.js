@@ -21,7 +21,12 @@ const router = createRouter({
     { path: '/struktur', redirect: '/#struktur' },
     { path: '/galeri', name: 'gallery', component: GalleryView },
     { path: '/login', name: 'login', component: LoginView },
-    { path: '/admin/dashboard', name: 'dashboard', component: DashboardView },
+    {
+      path: '/admin/dashboard',
+      name: 'dashboard',
+      component: DashboardView,
+      meta: { requiresAuth: true }
+    },
     // Menangkap semua URL yang tidak terdaftar dan diarahkan ke 404
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView }
   ],
@@ -45,6 +50,19 @@ const router = createRouter({
       })
     }
     return { top: 0, behavior: 'smooth' }
+  }
+})
+
+// Navigation Guard untuk Autentikasi Admin
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('nmyc_admin_token')
+
+  if (to.meta.requiresAuth && !token) {
+    next({ name: 'login' })
+  } else if (to.name === 'login' && token) {
+    next({ name: 'dashboard' })
+  } else {
+    next()
   }
 })
 
