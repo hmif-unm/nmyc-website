@@ -296,17 +296,17 @@
           <!-- Vertical Connector Line from Wakil downwards -->
           <div class="w-1 h-14 bg-primary"></div>
 
-          <!-- 3. LEVEL 3: SEKRETARIS 1 (Left) & SEKRETARIS 2 (Right) with Connecting Crossbar -->
+          <!-- 3. LEVEL 3: SEKRETARIS (Left) & BENDAHARA (Right) with Connecting Crossbar -->
           <!-- Desktop Tree Layout -->
           <div class="hidden lg:block relative w-full max-w-[1000px] mx-auto">
             <!-- Full Horizontal Crossbar from Left Card to Right Card -->
             <div class="absolute left-[380px] right-[380px] top-1/2 -translate-y-1/2 h-1 bg-primary z-0"></div>
 
-            <!-- Central Vertical Trunk running straight down between them -->
-            <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-primary z-0"></div>
+            <!-- Central Vertical Trunk running down from Wakil to the crossbar -->
+            <div class="absolute left-1/2 -translate-x-1/2 top-0 h-1/2 w-1 bg-primary z-0"></div>
 
             <div class="flex items-center justify-between relative z-10">
-              <!-- Sekretaris 1 -->
+              <!-- Sekretaris -->
               <div class="w-full max-w-[408px] h-[178px] sm:h-[184px] flip-card-container cursor-pointer select-none relative">
                 <div class="flip-card-inner w-full h-full">
                   <div class="flip-card-front absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex flex-col justify-between overflow-hidden">
@@ -319,14 +319,14 @@
                     <div class="flex items-center justify-between gap-4">
                       <div class="flex-1 min-w-0">
                         <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                          {{ secretary1.name }}
+                          {{ secretary.name }}
                         </h4>
                         <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
-                          {{ secretary1.role }}
+                          {{ secretary.role }}
                         </p>
                       </div>
                       <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                        <img :src="secretary1.avatar" :alt="secretary1.name" class="w-full h-full object-cover" @error="$event.target.src = defaultAvatar" />
+                        <img :src="secretary.avatar" :alt="secretary.name" class="w-full h-full object-cover" @error="$event.target.src = defaultAvatar" />
                       </div>
                     </div>
                   </div>
@@ -340,7 +340,7 @@
                 </div>
               </div>
 
-              <!-- Sekretaris 2 -->
+              <!-- Bendahara -->
               <div class="w-full max-w-[408px] h-[178px] sm:h-[184px] flip-card-container cursor-pointer select-none relative">
                 <div class="flip-card-inner w-full h-full">
                   <div class="flip-card-front absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex flex-col justify-between overflow-hidden">
@@ -353,14 +353,14 @@
                     <div class="flex items-center justify-between gap-4">
                       <div class="flex-1 min-w-0">
                         <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                          {{ secretary2.name }}
+                          {{ treasurer.name }}
                         </h4>
                         <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
-                          {{ secretary2.role }}
+                          {{ treasurer.role }}
                         </p>
                       </div>
                       <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                        <img :src="secretary2.avatar" :alt="secretary2.name" class="w-full h-full object-cover" />
+                        <img :src="treasurer.avatar" :alt="treasurer.name" class="w-full h-full object-cover" @error="$event.target.src = defaultAvatar" />
                       </div>
                     </div>
                   </div>
@@ -376,9 +376,9 @@
             </div>
           </div>
 
-          <!-- Mobile / Tablet Stacked Cards for Sekretaris 1 & 2 -->
+          <!-- Mobile / Tablet Stacked Cards for Sekretaris & Bendahara -->
           <div class="lg:hidden w-full flex flex-col items-center">
-            <!-- Sekretaris 1 -->
+            <!-- Sekretaris -->
             <div class="w-full max-w-[408px] h-[178px] sm:h-[184px] flip-card-container cursor-pointer select-none relative">
               <div class="flip-card-inner w-full h-full">
                 <div class="flip-card-front absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex flex-col justify-between overflow-hidden">
@@ -391,14 +391,14 @@
                   <div class="flex items-center justify-between gap-4">
                     <div class="flex-1 min-w-0">
                       <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                        {{ secretary1.name }}
+                        {{ secretary.name }}
                       </h4>
                       <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
-                        {{ secretary1.role }}
+                        {{ secretary.role }}
                       </p>
                     </div>
                     <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                      <img :src="secretary1.avatar" :alt="secretary1.name" class="w-full h-full object-cover" @error="$event.target.src = defaultAvatar" />
+                      <img :src="secretary.avatar" :alt="secretary.name" class="w-full h-full object-cover" @error="$event.target.src = defaultAvatar" />
                     </div>
                   </div>
                 </div>
@@ -414,7 +414,7 @@
 
             <div class="w-1 h-12 bg-primary"></div>
 
-            <!-- Sekretaris 2 -->
+            <!-- Bendahara -->
             <div class="w-full max-w-[408px] h-[178px] sm:h-[184px] flip-card-container cursor-pointer select-none relative">
               <div class="flip-card-inner w-full h-full">
                 <div class="flip-card-front absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex flex-col justify-between overflow-hidden">
@@ -427,14 +427,14 @@
                   <div class="flex items-center justify-between gap-4">
                     <div class="flex-1 min-w-0">
                       <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                        {{ secretary2.name }}
+                        {{ treasurer.name }}
                       </h4>
                       <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
-                        {{ secretary2.role }}
+                        {{ treasurer.role }}
                       </p>
                     </div>
                     <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                      <img :src="secretary2.avatar" :alt="secretary2.name" class="w-full h-full object-cover" />
+                      <img :src="treasurer.avatar" :alt="treasurer.name" class="w-full h-full object-cover" @error="$event.target.src = defaultAvatar" />
                     </div>
                   </div>
                 </div>
@@ -445,47 +445,6 @@
                     profile ig disini
                   </p>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Vertical Connector Line to Bendahara -->
-          <div class="w-1 h-14 bg-primary"></div>
-
-          <!-- 4. BENDAHARA (Center Bottom) -->
-          <div class="w-full max-w-[408px] h-[178px] sm:h-[184px] z-10 flip-card-container cursor-pointer select-none relative">
-            <div class="flip-card-inner w-full h-full">
-              <!-- Sisi Depan (Front Side - Preserved 100%) -->
-              <div class="flip-card-front absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex flex-col justify-between overflow-hidden">
-                <!-- Star Icon & Divider -->
-                <div>
-                  <div class="flex items-center gap-2 mb-2">
-                    <img :src="starImg" alt="Star" class="w-5 h-5 object-contain" />
-                  </div>
-                  <div class="h-0.5 w-full bg-light/60"></div>
-                </div>
-
-                <!-- Content -->
-                <div class="flex items-center justify-between gap-4">
-                  <div class="flex-1 min-w-0">
-                    <h4 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                      {{ treasurer.name }}
-                    </h4>
-                    <p class="text-base sm:text-lg font-medium text-[#817e85] mt-0.5">
-                      {{ treasurer.role }}
-                    </p>
-                  </div>
-                  <div class="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-primary overflow-hidden shadow-md bg-white">
-                    <img :src="treasurer.avatar" :alt="treasurer.name" class="w-full h-full object-cover" />
-                  </div>
-                </div>
-              </div>
-
-              <!-- Sisi Belakang (Back Side - 'profile ig disini' Centered) -->
-              <div class="flip-card-back absolute inset-0 w-full h-full rounded-[16px] bg-[#f8f9fa] border-4 border-primary p-5 shadow-lg flex items-center justify-center overflow-hidden">
-                <p class="text-primary font-bold text-lg sm:text-xl text-center tracking-wide">
-                  profile ig disini
-                </p>
               </div>
             </div>
           </div>
@@ -698,22 +657,16 @@ const viceLeader = {
   avatar: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/struktur_organisasi/Salma%20Ananda.JPG'
 }
 
-const secretary1 = {
+const secretary = {
   name: 'Nazua Qeisha G',
-  role: 'Sekretaris 1',
+  role: 'Sekretaris',
   avatar: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/struktur_organisasi/Nazua%20Qeisha%20G.JPG'
-}
-
-const secretary2 = {
-  name: 'Agil Alexander',
-  role: 'Sekretaris 2',
-  avatar: defaultAvatar
 }
 
 const treasurer = {
   name: 'Rahmah',
   role: 'Bendahara',
-  avatar: defaultAvatar
+  avatar: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/refs/heads/main/struktur_organisasi/Rahmah.jpg'
 }
 
 // Social Links

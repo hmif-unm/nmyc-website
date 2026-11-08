@@ -13,13 +13,16 @@
   "author": "hmif-unm",
   "type": "commonjs",
   "main": "backend/src/server.ts",
+  "workspaces": [
+    "frontend"
+  ],
   "scripts": {
     "frontend:dev": "bun run --cwd frontend dev",
-    "frontend:build": "bun run --cwd frontend build",
+    "frontend:build": "npm --prefix frontend run build",
     "backend:dev": "bun --watch backend/src/server.ts",
-    "serve": "bun run frontend:build && bun backend/src/server.ts",
+    "serve": "npm --prefix frontend run build && bun backend/src/server.ts",
     "start": "bun run serve",
-    "build": "bun run frontend:build",
+    "build": "npm --prefix frontend run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

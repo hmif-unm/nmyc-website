@@ -49,7 +49,7 @@ export async function getGalleriesHandler(
   reply: FastifyReply
 ) {
   const { category, search } = request.query
-  const items = galleryStore.getAll(category, search)
+  const items = await galleryStore.getAll(category, search)
 
   return reply.send({
     success: true,
@@ -70,7 +70,7 @@ export async function getGalleryByIdHandler(
     })
   }
 
-  const item = galleryStore.getById(id)
+  const item = await galleryStore.getById(id)
   if (!item) {
     return reply.status(404).send({
       success: false,
@@ -105,7 +105,7 @@ export async function createGalleryHandler(
     })
   }
 
-  const newItem = galleryStore.create({
+  const newItem = await galleryStore.create({
     title: title.trim(),
     category,
     image: normalizeGitHubUrl(image),
@@ -138,7 +138,7 @@ export async function updateGalleryHandler(
     payload.image = normalizeGitHubUrl(payload.image)
   }
 
-  const updatedItem = galleryStore.update(id, payload)
+  const updatedItem = await galleryStore.update(id, payload)
   if (!updatedItem) {
     return reply.status(404).send({
       success: false,
@@ -165,7 +165,7 @@ export async function deleteGalleryHandler(
     })
   }
 
-  const isDeleted = galleryStore.delete(id)
+  const isDeleted = await galleryStore.delete(id)
   if (!isDeleted) {
     return reply.status(404).send({
       success: false,

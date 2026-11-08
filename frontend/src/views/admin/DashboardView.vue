@@ -460,7 +460,6 @@
                   </div>
                   <div class="min-w-0 flex-1">
                     <p class="text-xs font-bold text-gray-700">Preview Image</p>
-                    <p class="text-[11px] text-gray-400 truncate mt-0.5">{{ formData.image }}</p>
                   </div>
                 </div>
               </div>

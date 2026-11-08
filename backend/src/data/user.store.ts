@@ -1,7 +1,7 @@
 import { verifyAdminKey } from '../db'
 
 export class UserStore {
-  verifyKey(key: string): boolean {
+  async verifyKey(key: string): Promise<boolean> {
     return verifyAdminKey(key)
   }
 }

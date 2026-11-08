@@ -1,5 +1,5 @@
 {
-  "buildCommand": "bun run frontend:build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
     {

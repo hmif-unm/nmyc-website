@@ -15,7 +15,7 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginBody }>,
     })
   }
 
-  const isValid = userStore.verifyKey(key.trim())
+  const isValid = await userStore.verifyKey(key.trim())
   if (!isValid) {
     return reply.status(401).send({
       success: false,

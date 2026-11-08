@@ -8,16 +8,16 @@ import {
 } from '../db'
 
 class GalleryStore {
-  getAll(category?: string, search?: string): GalleryItem[] {
+  async getAll(category?: string, search?: string): Promise<GalleryItem[]> {
     return getAllGalleries(category, search)
   }
 
-  getById(id: number): GalleryItem | undefined {
-    const item = getGalleryById(id)
+  async getById(id: number): Promise<GalleryItem | undefined> {
+    const item = await getGalleryById(id)
     return item || undefined
   }
 
-  create(data: Omit<GalleryItem, 'id'>): GalleryItem {
+  async create(data: Omit<GalleryItem, 'id'>): Promise<GalleryItem> {
     return insertGallery({
       title: data.title,
       category: data.category,
@@ -28,11 +28,11 @@ class GalleryStore {
     })
   }
 
-  update(id: number, data: Partial<Omit<GalleryItem, 'id'>>): GalleryItem | null {
+  async update(id: number, data: Partial<Omit<GalleryItem, 'id'>>): Promise<GalleryItem | null> {
     return updateGalleryInDb(id, data)
   }
 
-  delete(id: number): boolean {
+  async delete(id: number): Promise<boolean> {
     return deleteGalleryFromDb(id)
   }
 }

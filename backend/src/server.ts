@@ -4,13 +4,13 @@ import jwt from '@fastify/jwt'
 import fastifyStatic from '@fastify/static'
 import path from 'node:path'
 import fs from 'node:fs'
-import './db'
+import { ensureDatabase } from './db'
 import { authRoutes } from './routes/auth.routes'
 import { galleryRoutes } from './routes/gallery.routes'
 
 // Inisialisasi Fastify app
 export const app = Fastify({
-  logger: process.env.NODE_ENV !== 'production'
+  trustProxy: true
 })
 
 // Daftarkan CORS agar aman dipanggil dari frontend lokal maupun domain Vercel
@@ -22,35 +22,55 @@ app.register(cors, {
 
 // Daftarkan JWT untuk autentikasi admin
 app.register(jwt, {
-  secret: process.env.JWT_SECRET || 'nmyc-youth-choir-secret-token-key-2026'
+  secret: process.env.JWT_SECRET || 'nmyc-secret-key-jwt-2026'
 })
 
-// Daftarkan modular routes API
-app.get('/api/health', async () => ({ success: true, status: 'ok', timestamp: new Date().toISOString() }))
-app.register(authRoutes, { prefix: '/api/auth' })
-app.register(galleryRoutes, { prefix: '/api/gallery' })
+// Pastikan koneksi database (Cloudflare D1 atau SQLite) siap saat request masuk
+app.addHook('onRequest', async () => {
+  await ensureDatabase()
+})
 
-// Serve Frontend dari folder dist/ jika tersedia (Production / Serve mode)
+// Daftarkan Health Check
+const healthHandler = async () => ({
+  success: true,
+  status: 'ok',
+  database: process.env.CLOUDFLARE_DATABASE_ID ? 'Cloudflare D1' : 'SQLite Lokal',
+  timestamp: new Date().toISOString()
+})
+app.get('/api/health', healthHandler)
+app.get('/health', healthHandler)
+
+// Daftarkan modular routes API (dengan prefix /api dan tanpa prefix agar kompatibel dengan berbagai rewrite Vercel)
+app.register(authRoutes, { prefix: '/api/auth' })
+app.register(authRoutes, { prefix: '/auth' })
+app.register(galleryRoutes, { prefix: '/api/gallery' })
+app.register(galleryRoutes, { prefix: '/gallery' })
+
+// Serve Frontend dari folder dist/ saat dijalankan sebagai standalone server (Local / Docker)
 const distPath = path.resolve(process.cwd(), 'dist')
 
-if (fs.existsSync(distPath)) {
+if (process.env.VERCEL !== '1' && fs.existsSync(distPath)) {
   app.register(fastifyStatic, {
     root: distPath,
     prefix: '/',
     wildcard: false
   })
-
-  // SPA Fallback: Rute frontend (seperti /galeri, /login) diarahkan ke index.html
-  app.setNotFoundHandler(async (request, reply) => {
-    if (request.raw.url && request.raw.url.startsWith('/api')) {
-      return reply.status(404).send({
-        success: false,
-        message: `Endpoint ${request.raw.url} tidak ditemukan.`
-      })
-    }
-    return reply.sendFile('index.html')
-  })
 }
+
+// 404 Handler
+app.setNotFoundHandler(async (request, reply) => {
+  const isApi = request.raw.url && (request.raw.url.startsWith('/api') || request.raw.url.startsWith('/auth') || request.raw.url.startsWith('/gallery'))
+  
+  if (isApi || process.env.VERCEL === '1' || !fs.existsSync(distPath)) {
+    return reply.status(404).send({
+      success: false,
+      message: `Endpoint ${request.raw.url} tidak ditemukan.`
+    })
+  }
+
+  // SPA Fallback untuk standalone server lokal
+  return reply.sendFile('index.html')
+})
 
 // Jalankan HTTP listener jika dijalankan langsung (bukan saat di-import oleh serverless/test)
 const isMainModule = typeof Bun !== 'undefined'
