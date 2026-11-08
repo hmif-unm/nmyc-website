@@ -1,6 +1,6 @@
-import { sendJson, setCorsHeaders, parseBody } from '../lib/utils'
-import { verifyAdminKey } from '../lib/db'
-import { signToken } from '../lib/jwt'
+import { sendJson, setCorsHeaders, parseBody } from '../lib/utils.js'
+import { verifyAdminKey } from '../lib/db.js'
+import { signToken } from '../lib/jwt.js'
 
 export default async function handler(req: any, res: any) {
   setCorsHeaders(res)

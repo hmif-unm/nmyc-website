@@ -1,6 +1,6 @@
-import { sendJson, setCorsHeaders, parseBody, normalizeGitHubUrl } from '../lib/utils'
-import { getGalleryById, updateGalleryInDb, deleteGalleryFromDb } from '../lib/db'
-import { authenticateRequest } from '../lib/auth'
+import { sendJson, setCorsHeaders, parseBody, normalizeGitHubUrl } from '../lib/utils.js'
+import { getGalleryById, updateGalleryInDb, deleteGalleryFromDb } from '../lib/db.js'
+import { authenticateRequest } from '../lib/auth.js'
 
 function extractId(req: any): number {
   if (req.query?.id) {

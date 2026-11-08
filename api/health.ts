@@ -1,5 +1,5 @@
-import { sendJson, setCorsHeaders } from './lib/utils'
-import { isCloudflareD1Configured } from './lib/db'
+import { sendJson, setCorsHeaders } from './lib/utils.js'
+import { isCloudflareD1Configured } from './lib/db.js'
 
 export default async function handler(req: any, res: any) {
   setCorsHeaders(res)

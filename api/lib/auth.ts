@@ -1,4 +1,4 @@
-import { verifyToken } from './jwt'
+import { verifyToken } from './jwt.js'
 
 export function authenticateRequest(req: any): boolean {
   const authHeader = req.headers?.authorization || req.headers?.Authorization

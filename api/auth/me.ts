@@ -1,5 +1,5 @@
-import { sendJson, setCorsHeaders } from '../lib/utils'
-import { authenticateRequest } from '../lib/auth'
+import { sendJson, setCorsHeaders } from '../lib/utils.js'
+import { authenticateRequest } from '../lib/auth.js'
 
 export default async function handler(req: any, res: any) {
   setCorsHeaders(res)

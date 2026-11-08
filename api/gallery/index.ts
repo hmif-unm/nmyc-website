@@ -1,6 +1,6 @@
-import { sendJson, setCorsHeaders, parseBody, normalizeGitHubUrl } from '../lib/utils'
-import { getAllGalleries, insertGallery, type GalleryCategory } from '../lib/db'
-import { authenticateRequest } from '../lib/auth'
+import { sendJson, setCorsHeaders, parseBody, normalizeGitHubUrl } from '../lib/utils.js'
+import { getAllGalleries, insertGallery, type GalleryCategory } from '../lib/db.js'
+import { authenticateRequest } from '../lib/auth.js'
 
 export default async function handler(req: any, res: any) {
   setCorsHeaders(res)

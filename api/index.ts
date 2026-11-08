@@ -1,4 +1,4 @@
-import { sendJson, setCorsHeaders } from './lib/utils'
+import { sendJson, setCorsHeaders } from './lib/utils.js'
 
 export default async function handler(req: any, res: any) {
   setCorsHeaders(res)

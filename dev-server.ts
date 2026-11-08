@@ -4,13 +4,13 @@ import path from 'node:path'
 import { URL } from 'node:url'
 
 // Import file-based serverless handlers
-import healthHandler from './api/health'
-import loginHandler from './api/auth/login'
-import meHandler from './api/auth/me'
-import logoutHandler from './api/auth/logout'
-import galleryIndexHandler from './api/gallery/index'
-import galleryItemHandler from './api/gallery/[id]'
-import apiIndexHandler from './api/index'
+import healthHandler from './api/health.js'
+import loginHandler from './api/auth/login.js'
+import meHandler from './api/auth/me.js'
+import logoutHandler from './api/auth/logout.js'
+import galleryIndexHandler from './api/gallery/index.js'
+import galleryItemHandler from './api/gallery/[id].js'
+import apiIndexHandler from './api/index.js'
 
 const PORT = Number(process.env.PORT) || 5000
 const HOST = process.env.HOST || '0.0.0.0'
