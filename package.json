@@ -12,24 +12,20 @@
   },
   "author": "hmif-unm",
   "type": "module",
-  "main": "backend/src/server.ts",
+  "main": "dev-server.ts",
   "workspaces": [
     "frontend"
   ],
   "scripts": {
     "frontend:dev": "bun run --cwd frontend dev",
     "frontend:build": "npm --prefix frontend run build",
-    "backend:dev": "bun --watch backend/src/server.ts",
-    "serve": "npm --prefix frontend run build && bun backend/src/server.ts",
-    "start": "bun run serve",
+    "backend:dev": "bun --watch dev-server.ts",
+    "serve": "npm --prefix frontend run build && bun dev-server.ts",
+    "start": "bun dev-server.ts",
     "build": "npm --prefix frontend run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@fastify/cors": "^11.4.0",
-    "@fastify/jwt": "^10.2.7",
-    "@fastify/static": "^10.1.10",
-    "fastify": "^5.12.8",
     "vue-router": "^5.4.0"
   },
   "devDependencies": {

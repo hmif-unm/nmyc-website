@@ -7,10 +7,10 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
+    "types": ["node"],
     "paths": {
-      "@/*": ["frontend/src/*"]
+      "@/*": ["./frontend/src/*"]
     }
   },
-  "include": ["backend/src/**/*", "api/**/*"]
+  "include": ["api/**/*", "dev-server.ts"]
 }

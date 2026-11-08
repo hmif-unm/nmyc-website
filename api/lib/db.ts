@@ -3,17 +3,26 @@ import path from 'node:path'
 import fs from 'node:fs'
 import os from 'node:os'
 import { createRequire } from 'node:module'
-import type { GalleryItem, GalleryCategory } from '../types'
-import { isCloudflareD1Configured, executeD1Query } from './d1'
 
 const require = createRequire(import.meta.url)
 
-// Helper untuk hashing key admin (SHA-256)
+export type GalleryCategory = 'Lomba' | 'Penampilan' | 'Latihan' | 'Kegiatan'
+
+export interface GalleryItem {
+  id: number
+  title: string
+  category: GalleryCategory
+  image: string
+  description: string
+  fullDescription: string
+  createdAt?: string
+  updatedAt?: string
+}
+
 export function hashKey(rawKey: string): string {
   return crypto.createHash('sha256').update(rawKey.trim()).digest('hex')
 }
 
-// Data awal (Seed) dokumentasi resmi NMYC dari GitHub
 export const seedItems = [
   {
     title: 'Lomba Peksimida - Solo Pop',
@@ -105,29 +114,73 @@ export const seedItems = [
   }
 ]
 
-export const githubMappings: [string, string][] = [
-  ['/dokumentasi-assets/Lomba Peksimida - Solo Pop.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/lomba/Lomba%20Peksimida%20-%20Solo%20Pop.jpg'],
-  ['/dokumentasi-assets/Sertijab.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/general/Sertijab.jpg'],
-  ['/dokumentasi-assets/Penampilan Vocal Grub di wisuda ke 37.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Penampilan%20Vocal%20Grub%20di%20wisuda%20ke%2037.jpg'],
-  ['/dokumentasi-assets/Penampilan Solo Pria di Wisuda ke 40.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Penampilan%20Solo%20Pria%20di%20Wisuda%20ke%2040.jpg'],
-  ['/dokumentasi-assets/Tampil Pada saat Serasi 2025.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20Pada%20saat%20Serasi%202025.jpg'],
-  ['/dokumentasi-assets/Tampil di Serasi 2026.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20di%20Serasi%202026.jpg'],
-  ['/dokumentasi-assets/Tampil di JIF sebelum Wisuda.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20di%20JIF%20sebelum%20Wisuda.jpg'],
-  ['/dokumentasi-assets/Liwetan bersama seluruh anggota NMYC.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/general/Liwetan%20bersama%20seluruh%20anggota%20NMYC.jpg'],
-  ['/dokumentasi-assets/Penampilan Solo Wanita di wisuda ke 40.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Penampilan%20Solo%20Wanita%20di%20wisuda%20ke%2040.jpg'],
-  ['/dokumentasi-assets/Foto Latihan.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/latihan/Foto%20Latihan.jpg'],
-  ['/dokumentasi-assets/Tampil pada saat event.jpg', 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20pada%20saat%20event.jpg']
-]
+export function getD1Config() {
+  const accountId =
+    process.env.CLOUDFLARE_ACCOUNT_ID || process.env.CF_ACCOUNT_ID
+  const databaseId =
+    process.env.CLOUDFLARE_DATABASE_ID ||
+    process.env.CLOUDFLARE_D1_DATABASE_ID ||
+    process.env.CF_DATABASE_ID
+  const apiToken =
+    process.env.CLOUDFLARE_D1_API_TOKEN ||
+    process.env.CLOUDFLARE_API_TOKEN ||
+    process.env.CF_D1_API_TOKEN
+
+  return { accountId, databaseId, apiToken }
+}
+
+export function isCloudflareD1Configured(): boolean {
+  const { accountId, databaseId, apiToken } = getD1Config()
+  return Boolean(accountId && databaseId && apiToken)
+}
+
+export async function executeD1Query<T = any>(
+  sql: string,
+  params: any[] = []
+): Promise<{ results: T[]; meta: any }> {
+  const { accountId, databaseId, apiToken } = getD1Config()
+
+  if (!accountId || !databaseId || !apiToken) {
+    throw new Error('Kredensial Cloudflare D1 belum lengkap.')
+  }
+
+  const endpoint = `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ sql, params })
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`Cloudflare D1 HTTP ${response.status}: ${errorText}`)
+  }
+
+  const json: any = await response.json()
+  if (!json.success) {
+    const errorDetails = json.errors?.map((e: any) => e.message).join(', ') || 'Query failed'
+    throw new Error(`Cloudflare D1 Error: ${errorDetails}`)
+  }
+
+  const firstResult = json.result?.[0]
+  return {
+    results: firstResult?.results || [],
+    meta: firstResult?.meta || {}
+  }
+}
 
 // ========================
-// ENGINE LOCAL SQLITE
+// ENGINE LOCAL SQLITE FALLBACK
 // ========================
 let localDbInstance: any = null
 
 function getLocalDb() {
   if (localDbInstance) return localDbInstance
 
-  // Lazy require node:sqlite agar tidak dieksekusi di runtime yang tidak mendukung
   const { DatabaseSync } = require('node:sqlite')
   const isVercel = process.env.VERCEL === '1'
   const DATA_DIR = isVercel ? os.tmpdir() : path.resolve(process.cwd(), 'backend/data')
@@ -172,7 +225,6 @@ function initLocalDatabase() {
     const keyHash = hashKey(defaultKey)
     const insertKey = db.prepare('INSERT INTO admin_keys (key_hash, name, created_at) VALUES (?, ?, ?)')
     insertKey.run(keyHash, 'Admin Utama', new Date().toISOString())
-    console.log('🔑 Database SQLite Lokal: Default Admin Key telah dibuat di database server.')
   }
 
   const galleryCount = db.prepare('SELECT COUNT(*) as count FROM galleries').get() as { count: number }
@@ -192,18 +244,9 @@ function initLocalDatabase() {
         item.created_at
       )
     }
-    console.log(`🖼️ Database SQLite Lokal: Berhasil menambahkan ${seedItems.length} dokumentasi galeri resmi.`)
-  }
-
-  const updateGitHubStmt = db.prepare('UPDATE galleries SET image = ? WHERE image = ?')
-  for (const [oldPath, newUrl] of githubMappings) {
-    updateGitHubStmt.run(newUrl, oldPath)
   }
 }
 
-// ========================
-// ENGINE CLOUDFLARE D1
-// ========================
 async function initD1Database() {
   await executeD1Query(`
     CREATE TABLE IF NOT EXISTS admin_keys (
@@ -236,7 +279,6 @@ async function initD1Database() {
       'INSERT INTO admin_keys (key_hash, name, created_at) VALUES (?, ?, ?)',
       [keyHash, 'Admin Utama', new Date().toISOString()]
     )
-    console.log('🔑 Cloudflare D1 (SQLite): Default Admin Key telah dibuat di database D1.')
   }
 
   const galleryCountRes = await executeD1Query<{ count: number }>('SELECT COUNT(*) as count FROM galleries')
@@ -249,17 +291,9 @@ async function initD1Database() {
         [item.title, item.category, item.image, item.description, item.full_description, item.created_at]
       )
     }
-    console.log(`🖼️ Cloudflare D1 (SQLite): Berhasil menambahkan ${seedItems.length} dokumentasi galeri resmi.`)
-  }
-
-  for (const [oldPath, newUrl] of githubMappings) {
-    await executeD1Query('UPDATE galleries SET image = ? WHERE image = ?', [newUrl, oldPath])
   }
 }
 
-// ========================
-// INISIALISASI DATABASE
-// ========================
 let isDatabaseReady = false
 let initPromise: Promise<void> | null = null
 
@@ -270,15 +304,13 @@ export async function ensureDatabase(): Promise<void> {
   initPromise = (async () => {
     try {
       if (isCloudflareD1Configured()) {
-        console.log('☁️ Menggunakan Cloudflare D1 SQLite Database...')
         await initD1Database()
       } else {
-        console.log('💾 Menggunakan SQLite Database Lokal...')
         initLocalDatabase()
       }
       isDatabaseReady = true
     } catch (err) {
-      console.error('❌ Gagal menginisialisasi database:', err)
+      console.error('Database init error:', err)
       throw err
     }
   })()
@@ -286,19 +318,6 @@ export async function ensureDatabase(): Promise<void> {
   return initPromise
 }
 
-// Inisialisasi otomatis saat dijalankan di lingkungan lokal
-if (process.env.VERCEL !== '1' && !isCloudflareD1Configured()) {
-  try {
-    initLocalDatabase()
-    isDatabaseReady = true
-  } catch (err) {
-    console.warn('⚠️ Gagal auto-init local db pada startup:', err)
-  }
-}
-
-// ========================
-// ROW MAPPERS & TYPES
-// ========================
 interface DbGalleryRow {
   id: number
   title: string
@@ -323,9 +342,6 @@ function mapRowToGalleryItem(row: DbGalleryRow): GalleryItem {
   }
 }
 
-// ========================
-// OPERASI AUTHENTIKASI KEY
-// ========================
 export async function verifyAdminKey(rawKey: string): Promise<boolean> {
   if (!rawKey || typeof rawKey !== 'string') return false
   await ensureDatabase()
@@ -343,9 +359,6 @@ export async function verifyAdminKey(rawKey: string): Promise<boolean> {
   return !!result
 }
 
-// ========================
-// OPERASI CRUD GALERI
-// ========================
 export async function getAllGalleries(category?: string, search?: string): Promise<GalleryItem[]> {
   await ensureDatabase()
 

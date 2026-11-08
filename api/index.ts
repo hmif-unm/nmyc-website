@@ -1,16 +1,21 @@
-import type { IncomingMessage, ServerResponse } from 'node:http'
-import app from '../backend/src/server'
+import { sendJson, setCorsHeaders } from './lib/utils'
 
-// Entry point Serverless Function untuk Vercel
-export default async function handler(req: IncomingMessage, res: ServerResponse) {
-  // Normalisasi URL jika Vercel melakukan internal rewrite
-  const forwardedUrl = (req.headers['x-forwarded-uri'] || req.headers['x-matched-path']) as string | undefined
-  if (forwardedUrl && typeof forwardedUrl === 'string' && (forwardedUrl.startsWith('/api') || forwardedUrl.startsWith('/auth') || forwardedUrl.startsWith('/gallery'))) {
-    req.url = forwardedUrl
-  } else if (req.url && (req.url.startsWith('/api/index.ts') || req.url.startsWith('/api/index'))) {
-    req.url = req.url.replace(/^\/api\/index(\.ts)?/, '/api') || '/api'
+export default async function handler(req: any, res: any) {
+  setCorsHeaders(res)
+  if (req.method === 'OPTIONS') {
+    return res.status ? res.status(200).end() : res.end()
   }
 
-  await app.ready()
-  app.server.emit('request', req, res)
+  return sendJson(res, 200, {
+    name: 'Nusa Mandiri Youth Choir (NMYC) API',
+    status: 'online',
+    version: '1.0.0',
+    endpoints: [
+      '/api/health',
+      '/api/gallery',
+      '/api/auth/login',
+      '/api/auth/me',
+      '/api/auth/logout'
+    ]
+  })
 }
