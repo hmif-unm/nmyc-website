@@ -11,7 +11,7 @@
     "url": "git+https://github.com/hmif-unm/nmyc-website.git"
   },
   "author": "hmif-unm",
-  "type": "commonjs",
+  "type": "module",
   "main": "backend/src/server.ts",
   "workspaces": [
     "frontend"

@@ -28,6 +28,7 @@ frontend/.vite-temp/
 .env.development
 .env.test
 .env.production
+env
 *.pem
 *.key
 *.cert

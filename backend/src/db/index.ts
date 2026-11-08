@@ -2,8 +2,11 @@ import crypto from 'node:crypto'
 import path from 'node:path'
 import fs from 'node:fs'
 import os from 'node:os'
+import { createRequire } from 'node:module'
 import type { GalleryItem, GalleryCategory } from '../types'
 import { isCloudflareD1Configured, executeD1Query } from './d1'
+
+const require = createRequire(import.meta.url)
 
 // Helper untuk hashing key admin (SHA-256)
 export function hashKey(rawKey: string): string {
