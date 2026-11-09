@@ -578,9 +578,8 @@
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
-                        Pratinjau Hasil Tampilan (Card & Thumbnail)
+                        Preview Hasil Tampilan (Card & Thumbnail)
                       </label>
-                      <span class="text-[10px] text-gray-400 font-medium">Real-time update saat mouse digerakkan</span>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-stretch">
@@ -589,9 +588,8 @@
                         <div class="flex items-center justify-between mb-2">
                           <span class="text-[11px] font-bold text-gray-700 flex items-center gap-1">
                             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                            Pratinjau Card (Halaman Depan)
+                            Preview Card
                           </span>
-                          <span class="text-[10px] text-gray-400">Rasio Card Galeri</span>
                         </div>
 
                         <div class="relative w-full h-36 sm:h-40 rounded-xl overflow-hidden bg-gray-950 border border-gray-100 shadow-inner group">
@@ -619,9 +617,8 @@
                         <div class="w-full flex items-center justify-between mb-2">
                           <span class="text-[11px] font-bold text-gray-700 flex items-center gap-1">
                             <span class="w-2 h-2 rounded-full bg-primary"></span>
-                            Pratinjau Thumbnail
+                            Preview Thumbnail
                           </span>
-                          <span class="text-[10px] text-gray-400">1:1 Kotak</span>
                         </div>
 
                         <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-gray-950 border-2 border-purple-200 shadow-md relative my-auto">
@@ -634,10 +631,6 @@
                           />
                           <div class="absolute inset-0 border border-white/20 rounded-2xl pointer-events-none"></div>
                         </div>
-
-                        <p class="text-[10px] text-gray-400 mt-2">
-                          Tampilan di daftar tabel admin & pencarian
-                        </p>
                       </div>
                     </div>
                   </div>
