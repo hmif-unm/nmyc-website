@@ -1,5 +1,5 @@
 import { sendJson, setCorsHeaders, parseBody, normalizeGitHubUrl } from '../lib/utils.js'
-import { getAllGalleries, insertGallery, type GalleryCategory } from '../lib/db.js'
+import { getAllGalleries, getGalleryById, insertGallery, updateGalleryInDb, deleteGalleryFromDb, type GalleryCategory } from '../lib/db.js'
 import { authenticateRequest } from '../lib/auth.js'
 
 export default async function handler(req: any, res: any) {
@@ -14,6 +14,18 @@ export default async function handler(req: any, res: any) {
       const url = new URL(req.url || '', `http://${req.headers?.host || 'localhost'}`)
       const category = req.query?.category || url.searchParams.get('category') || undefined
       const search = req.query?.search || url.searchParams.get('search') || undefined
+      const singleId = req.query?.id || url.searchParams.get('id')
+
+      if (singleId) {
+        const idNum = parseInt(String(singleId), 10)
+        if (!isNaN(idNum) && idNum > 0) {
+          const singleItem = await getGalleryById(idNum)
+          if (!singleItem) {
+            return sendJson(res, 404, { success: false, message: 'Data galeri tidak ditemukan.' })
+          }
+          return sendJson(res, 200, { success: true, data: singleItem })
+        }
+      }
 
       const items = await getAllGalleries(category, search)
       return sendJson(res, 200, {
@@ -29,8 +41,8 @@ export default async function handler(req: any, res: any) {
     }
   }
 
-  // 2. POST: Tambah galeri baru (Wajib Login Admin)
-  if (req.method === 'POST') {
+  // 2. POST & PUT: Tambah atau Perbarui galeri (Wajib Login Admin)
+  if (req.method === 'POST' || req.method === 'PUT') {
     const isAuth = authenticateRequest(req)
     if (!isAuth) {
       return sendJson(res, 401, {
@@ -41,6 +53,41 @@ export default async function handler(req: any, res: any) {
 
     try {
       const body = await parseBody(req)
+      const url = new URL(req.url || '', `http://${req.headers?.host || 'localhost'}`)
+      const queryId = req.query?.id || url.searchParams.get('id')
+      const targetId = parseInt(String(body?.id || queryId || ''), 10)
+
+      // A. Jika ada ID atau method adalah PUT -> UPDATE
+      if ((!isNaN(targetId) && targetId > 0) || req.method === 'PUT') {
+        const idToUpdate = !isNaN(targetId) && targetId > 0 ? targetId : NaN
+        if (isNaN(idToUpdate)) {
+          return sendJson(res, 400, {
+            success: false,
+            message: 'ID galeri harus disertakan untuk memperbarui data.'
+          })
+        }
+
+        const payload = { ...body }
+        if (payload.image) {
+          payload.image = normalizeGitHubUrl(payload.image)
+        }
+
+        const updated = await updateGalleryInDb(idToUpdate, payload)
+        if (!updated) {
+          return sendJson(res, 404, {
+            success: false,
+            message: 'Data galeri tidak ditemukan untuk diperbarui.'
+          })
+        }
+
+        return sendJson(res, 200, {
+          success: true,
+          message: 'Data galeri berhasil diperbarui.',
+          data: updated
+        })
+      }
+
+      // B. INSERT data baru
       const { title, category, image, imagePosition, description, fullDescription, createdAt } = body || {}
 
       if (!title || !category || !image || !description) {
@@ -76,7 +123,50 @@ export default async function handler(req: any, res: any) {
     } catch (err: any) {
       return sendJson(res, 500, {
         success: false,
-        message: err.message || 'Gagal menambahkan data galeri.'
+        message: err.message || 'Gagal menyimpan data galeri.'
+      })
+    }
+  }
+
+  // 3. DELETE: Hapus data galeri
+  if (req.method === 'DELETE') {
+    const isAuth = authenticateRequest(req)
+    if (!isAuth) {
+      return sendJson(res, 401, {
+        success: false,
+        message: 'Akses ditolak. Silakan login sebagai admin terlebih dahulu.'
+      })
+    }
+
+    try {
+      const body = await parseBody(req).catch(() => ({}))
+      const url = new URL(req.url || '', `http://${req.headers?.host || 'localhost'}`)
+      const queryId = req.query?.id || url.searchParams.get('id')
+      const targetId = parseInt(String(body?.id || queryId || ''), 10)
+
+      if (isNaN(targetId) || targetId <= 0) {
+        return sendJson(res, 400, {
+          success: false,
+          message: 'ID galeri harus disertakan untuk menghapus data.'
+        })
+      }
+
+      const deleted = await deleteGalleryFromDb(targetId)
+      if (!deleted) {
+        return sendJson(res, 404, {
+          success: false,
+          message: 'Data galeri tidak ditemukan untuk dihapus.'
+        })
+      }
+
+      return sendJson(res, 200, {
+        success: true,
+        message: 'Data galeri berhasil dihapus.'
+      })
+    } catch (err: any) {
+      return sendJson(res, 500, {
+        success: false,
+        message: err.message || 'Gagal menghapus data galeri.'
       })
     }
   }

@@ -455,20 +455,22 @@
                       <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      Atur Framing & Ukuran Foto (Crop & Zoom)
+                      Atur Foto
                     </label>
-                    <div class="flex items-center gap-1.5">
-                      <span class="text-[10px] font-semibold text-primary px-2 py-0.5 rounded-full bg-purple-100 border border-purple-200">
-                        Zoom: {{ Math.round(cropState.scale * 100) }}%
-                      </span>
-                      <span class="text-[10px] font-semibold text-purple-700 px-2 py-0.5 rounded-full bg-white border border-purple-200">
-                        X: {{ cropState.x }}% | Y: {{ cropState.y }}%
-                      </span>
-                    </div>
+                    <button
+                      type="button"
+                      @click="resetCrop"
+                      class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition-all cursor-pointer flex items-center gap-1"
+                    >
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      Reset
+                    </button>
                   </div>
 
                   <p class="text-[11px] text-gray-500 mb-3 leading-relaxed">
-                    <strong class="text-gray-700">Tahan & geser mouse</strong> langsung di atas foto untuk memindahkan posisi. Geser <strong class="text-gray-700">slider ukuran / zoom</strong> atau putar scroll mouse untuk mengatur ukuran yang ingin ditampilkan.
+                    Tahan & geser mouse langsung di atas foto untuk memindahkan posisi. Geser slider untuk mengatur zoom.
                   </p>
 
                   <!-- KOTAK KERJA UTAMA (INTERACTIVE DRAG & ZOOM STAGE) -->
@@ -513,38 +515,25 @@
                         <div class="w-1.5 h-1.5 rounded-full bg-white/70 shadow-sm"></div>
                       </div>
                     </div>
-
-                    <!-- Badge Petunjuk Mouse -->
-                    <div class="absolute top-2.5 left-2.5 pointer-events-none flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10px] text-white/90 font-medium border border-white/10">
-                      <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
-                      </svg>
-                      <span>{{ isDragging ? 'Sedang digeser...' : 'Tahan klik & geser mouse' }}</span>
-                    </div>
-
-                    <!-- Badge Zoom Wheel -->
-                    <div class="absolute top-2.5 right-2.5 pointer-events-none px-2 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10px] text-white/80 font-medium border border-white/10">
-                      🔍 Scroll mouse untuk zoom
-                    </div>
                   </div>
 
-                  <!-- KONTROL UKURAN / ZOOM SLIDER & TOMBOL +/- -->
+                  <!-- KONTROL ATUR ZOOM (SLIDER 0% - 200%, DEFAULT TENGAH 100%) -->
                   <div class="mt-3.5 p-3 bg-white/80 rounded-xl border border-purple-100 flex flex-col gap-2.5">
                     <div class="flex items-center justify-between text-xs font-semibold text-gray-700">
                       <span class="flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
                         </svg>
-                        Atur Ukuran (Zoom Foto)
+                        Atur Zoom
                       </span>
-                      <span class="text-primary font-bold text-xs">{{ Math.round(cropState.scale * 100) }}%</span>
+                      <span class="text-primary font-bold text-xs">{{ zoomSliderValue }}%</span>
                     </div>
 
                     <div class="flex items-center gap-3">
                       <!-- Zoom Out Button -->
                       <button
                         type="button"
-                        @click="zoomStep(-0.1)"
+                        @click="zoomStep(-10)"
                         class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer shrink-0"
                         title="Perkecil Ukuran"
                       >
@@ -552,64 +541,31 @@
                       </button>
 
                       <!-- Zoom Slider -->
-                      <input
-                        v-model.number="cropState.scale"
-                        @input="onZoomSliderChange"
-                        type="range"
-                        min="1.0"
-                        max="3.0"
-                        step="0.05"
-                        class="w-full accent-primary cursor-pointer h-2 bg-gray-200 rounded-lg"
-                      />
+                      <div class="flex-1 flex flex-col gap-1">
+                        <input
+                          v-model.number="zoomSliderValue"
+                          @input="onZoomSliderInput"
+                          type="range"
+                          min="0"
+                          max="200"
+                          step="1"
+                          class="w-full accent-primary cursor-pointer h-2 bg-gray-200 rounded-lg"
+                        />
+                        <div class="flex items-center justify-between text-[10px] text-gray-400 font-medium px-0.5">
+                          <span>0%</span>
+                          <span>100%</span>
+                          <span>200%</span>
+                        </div>
+                      </div>
 
                       <!-- Zoom In Button -->
                       <button
                         type="button"
-                        @click="zoomStep(0.1)"
+                        @click="zoomStep(10)"
                         class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer shrink-0"
                         title="Perbesar Ukuran"
                       >
                         +
-                      </button>
-                    </div>
-
-                    <!-- Tombol Presets & Reset -->
-                    <div class="pt-2 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2">
-                      <div class="flex flex-wrap items-center gap-1.5">
-                        <span class="text-[10px] text-gray-400 font-medium">Preset Cepat:</span>
-                        <button
-                          type="button"
-                          @click="applyPreset(50, 15, 1.15)"
-                          class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-purple-100/70 hover:bg-primary hover:text-white text-purple-900 transition-all cursor-pointer"
-                        >
-                          👤 Fokus Wajah (Atas)
-                        </button>
-                        <button
-                          type="button"
-                          @click="applyPreset(50, 50, 1.0)"
-                          class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all cursor-pointer"
-                        >
-                          🎯 Pas Tengah
-                        </button>
-                        <button
-                          type="button"
-                          @click="applyPreset(50, 85, 1.1)"
-                          class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all cursor-pointer"
-                        >
-                          🔽 Fokus Bawah
-                        </button>
-                      </div>
-
-                      <!-- Tombol Reset -->
-                      <button
-                        type="button"
-                        @click="resetCrop"
-                        class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition-all cursor-pointer flex items-center gap-1"
-                      >
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        Reset
                       </button>
                     </div>
                   </div>
@@ -839,7 +795,7 @@
 import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import logoImg from '@/assets/landing-assets/logo.png'
-import { parseImageCrop, stringifyImageCrop, getImageCropStyle } from '@/utils/imageCrop.js'
+import { parseImageCrop, stringifyImageCrop, getImageCropStyle, sliderToScale, scaleToSlider } from '@/utils/imageCrop.js'
 
 const router = useRouter()
 
@@ -1153,36 +1109,33 @@ function stopTouchDrag() {
   window.removeEventListener('touchend', stopTouchDrag)
 }
 
-// Mouse Wheel Zoom
-function handleWheel(e) {
-  const delta = e.deltaY < 0 ? 0.05 : -0.05
-  setZoom(cropState.value.scale + delta)
-}
+const zoomSliderValue = ref(100)
 
-function setZoom(val) {
-  cropState.value.scale = Number(Math.max(1.0, Math.min(3.0, val)).toFixed(2))
+function onZoomSliderInput() {
+  cropState.value.scale = sliderToScale(zoomSliderValue.value)
   syncCropToFormData()
 }
 
 function zoomStep(step) {
-  setZoom(cropState.value.scale + step)
+  zoomSliderValue.value = Math.max(0, Math.min(200, zoomSliderValue.value + step))
+  onZoomSliderInput()
 }
 
-function onZoomSliderChange() {
-  setZoom(cropState.value.scale)
-}
-
-function applyPreset(x, y, scale) {
-  cropState.value = {
-    x: Math.round(x),
-    y: Math.round(y),
-    scale: Number(scale.toFixed(2))
-  }
-  syncCropToFormData()
+// Mouse Wheel Zoom
+function handleWheel(e) {
+  const delta = e.deltaY < 0 ? 5 : -5
+  zoomSliderValue.value = Math.max(0, Math.min(200, zoomSliderValue.value + delta))
+  onZoomSliderInput()
 }
 
 function resetCrop() {
-  applyPreset(50, 50, 1.0)
+  zoomSliderValue.value = 100
+  cropState.value = {
+    x: 50,
+    y: 50,
+    scale: 1.0
+  }
+  syncCropToFormData()
 }
 
 const previewImageUrl = computed(() => {
@@ -1200,6 +1153,7 @@ function openAddModal() {
   isEditMode.value = false
   currentEditId.value = null
   imageLoadError.value = false
+  zoomSliderValue.value = 100
   cropState.value = { x: 50, y: 50, scale: 1.0 }
   formData.value = {
     title: '',
@@ -1217,6 +1171,7 @@ function openEditModal(item) {
   currentEditId.value = item.id
   imageLoadError.value = false
   cropState.value = parseImageCrop(item.imagePosition)
+  zoomSliderValue.value = scaleToSlider(cropState.value.scale)
   formData.value = {
     title: item.title,
     category: item.category,
@@ -1240,6 +1195,7 @@ async function handleSubmitForm() {
     const method = isEditMode.value ? 'PUT' : 'POST'
 
     const payload = {
+      ...(isEditMode.value ? { id: currentEditId.value } : {}),
       ...formData.value,
       image: normalizeGitHubUrl(formData.value.image),
       imagePosition: formData.value.imagePosition || stringifyImageCrop(cropState.value)

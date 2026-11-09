@@ -50,8 +50,8 @@ export default async function handler(req: any, res: any) {
     }
   }
 
-  // 2. PUT: Perbarui data galeri (Wajib Login Admin)
-  if (req.method === 'PUT') {
+  // 2. PUT / POST: Perbarui data galeri (Wajib Login Admin)
+  if (req.method === 'PUT' || req.method === 'POST') {
     const isAuth = authenticateRequest(req)
     if (!isAuth) {
       return sendJson(res, 401, {
