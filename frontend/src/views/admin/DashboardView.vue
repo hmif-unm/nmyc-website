@@ -279,12 +279,12 @@
 
                   <!-- Foto Thumbnail -->
                   <td class="py-4 px-6">
-                    <div class="w-16 h-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                    <div class="w-16 h-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0 relative">
                       <img
                         :src="item.image"
                         :alt="item.title"
-                        :style="{ objectPosition: item.imagePosition || 'center' }"
-                        class="w-full h-full object-cover"
+                        :style="getImageCropStyle(item.imagePosition)"
+                        class="w-full h-full"
                         @error="$event.target.src = '/assets/landing-assets/ellipse-20.png'"
                         loading="lazy"
                       />
@@ -448,90 +448,242 @@
                   Bisa tempelkan link foto dari repositori GitHub NMYC. Link otomatis disesuaikan agar foto langsung tampil.
                 </p>
 
-                <!-- Pengaturan Posisi & Fokus Foto (Custom Crop) -->
-                <div v-if="formData.image" class="mt-4 p-4 bg-purple-50/60 rounded-2xl border border-purple-100">
+                <!-- Pengaturan Posisi & Ukuran Foto (Avatar / Profile Style: Drag Mouse & Zoom) -->
+                <div v-if="formData.image" class="mt-4 p-4 sm:p-5 bg-gradient-to-b from-purple-50/80 to-purple-100/50 rounded-2xl border border-purple-200/80 shadow-sm">
                   <div class="flex items-center justify-between mb-2">
-                    <label class="text-xs font-bold text-purple-900 flex items-center gap-1.5">
+                    <label class="text-xs font-bold text-purple-950 flex items-center gap-1.5">
                       <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      Atur Posisi & Fokus Foto (Crop)
+                      Atur Framing & Ukuran Foto (Crop & Zoom)
                     </label>
-                    <span class="text-[11px] font-semibold text-primary px-2.5 py-0.5 rounded-full bg-purple-100">
-                      Posisi: {{ verticalPositionPercent }}%
-                    </span>
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-[10px] font-semibold text-primary px-2 py-0.5 rounded-full bg-purple-100 border border-purple-200">
+                        Zoom: {{ Math.round(cropState.scale * 100) }}%
+                      </span>
+                      <span class="text-[10px] font-semibold text-purple-700 px-2 py-0.5 rounded-full bg-white border border-purple-200">
+                        X: {{ cropState.x }}% | Y: {{ cropState.y }}%
+                      </span>
+                    </div>
                   </div>
 
                   <p class="text-[11px] text-gray-500 mb-3 leading-relaxed">
-                    Geser slider di bawah ini agar wajah atau objek penting tidak terpotong saat pengunjung melihat kartu galeri atau membuka detail foto.
+                    <strong class="text-gray-700">Tahan & geser mouse</strong> langsung di atas foto untuk memindahkan posisi. Geser <strong class="text-gray-700">slider ukuran / zoom</strong> atau putar scroll mouse untuk mengatur ukuran yang ingin ditampilkan.
                   </p>
 
-                  <!-- Aspect Ratio Preview Box -->
-                  <div class="relative w-full h-44 sm:h-52 rounded-xl overflow-hidden bg-gray-900 border-2 border-primary/30 shadow-inner group">
+                  <!-- KOTAK KERJA UTAMA (INTERACTIVE DRAG & ZOOM STAGE) -->
+                  <div
+                    ref="cropperStageRef"
+                    @mousedown="startDrag"
+                    @touchstart="startTouchDrag"
+                    @wheel.prevent="handleWheel"
+                    :class="[
+                      'relative w-full h-52 sm:h-64 rounded-2xl overflow-hidden bg-gray-950 border-2 select-none shadow-inner',
+                      isDragging ? 'cursor-grabbing border-primary ring-2 ring-primary/40' : 'cursor-grab border-purple-300 hover:border-primary'
+                    ]"
+                    title="Tahan klik kiri dan geser mouse untuk mengatur posisi"
+                  >
+                    <!-- Gambar yang digeser & di-zoom -->
                     <img
                       :src="previewImageUrl"
-                      alt="Preview Custom Crop"
-                      :style="{ objectPosition: formattedObjectPosition }"
-                      class="w-full h-full object-cover transition-all duration-150 select-none"
+                      alt="Pratinjau Crop Interaktif"
+                      :style="cropperStageStyle"
+                      class="w-full h-full pointer-events-none select-none transition-[filter] duration-200"
+                      draggable="false"
                       @error="imageLoadError = true"
                       @load="imageLoadError = false"
                     />
-                    <div class="absolute inset-0 border border-white/20 pointer-events-none rounded-xl"></div>
-                    <div class="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/60 backdrop-blur-sm text-[10px] text-white/90 font-medium">
-                      Pratinjau Tampilan Web
+
+                    <!-- Overlay Grid Rule-of-Thirds & Framing Guide -->
+                    <div class="absolute inset-0 pointer-events-none grid grid-cols-3 grid-rows-3">
+                      <div class="border-r border-b border-white/20"></div>
+                      <div class="border-r border-b border-white/20"></div>
+                      <div class="border-b border-white/20"></div>
+                      <div class="border-r border-b border-white/20"></div>
+                      <div class="border-r border-b border-white/20"></div>
+                      <div class="border-b border-white/20"></div>
+                      <div class="border-r border-b border-white/20"></div>
+                      <div class="border-r border-b border-white/20"></div>
+                      <div></div>
+                    </div>
+
+                    <!-- Center Reticle Indicator -->
+                    <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+                      <div class="w-8 h-8 rounded-full border border-white/40 flex items-center justify-center">
+                        <div class="w-1.5 h-1.5 rounded-full bg-white/70 shadow-sm"></div>
+                      </div>
+                    </div>
+
+                    <!-- Badge Petunjuk Mouse -->
+                    <div class="absolute top-2.5 left-2.5 pointer-events-none flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10px] text-white/90 font-medium border border-white/10">
+                      <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                      </svg>
+                      <span>{{ isDragging ? 'Sedang digeser...' : 'Tahan klik & geser mouse' }}</span>
+                    </div>
+
+                    <!-- Badge Zoom Wheel -->
+                    <div class="absolute top-2.5 right-2.5 pointer-events-none px-2 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10px] text-white/80 font-medium border border-white/10">
+                      🔍 Scroll mouse untuk zoom
                     </div>
                   </div>
 
-                  <!-- Vertical Position Slider -->
-                  <div class="mt-4">
-                    <div class="flex items-center justify-between text-[11px] text-gray-500 font-medium mb-1.5">
-                      <span>Fokus Atas (Wajah 0%)</span>
-                      <span>Tengah (50%)</span>
-                      <span>Bawah (100%)</span>
+                  <!-- KONTROL UKURAN / ZOOM SLIDER & TOMBOL +/- -->
+                  <div class="mt-3.5 p-3 bg-white/80 rounded-xl border border-purple-100 flex flex-col gap-2.5">
+                    <div class="flex items-center justify-between text-xs font-semibold text-gray-700">
+                      <span class="flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                        </svg>
+                        Atur Ukuran (Zoom Foto)
+                      </span>
+                      <span class="text-primary font-bold text-xs">{{ Math.round(cropState.scale * 100) }}%</span>
                     </div>
-                    <input
-                      v-model.number="verticalPositionPercent"
-                      type="range"
-                      min="0"
-                      max="100"
-                      step="1"
-                      class="w-full accent-primary cursor-pointer h-2 bg-gray-200 rounded-lg"
-                    />
+
+                    <div class="flex items-center gap-3">
+                      <!-- Zoom Out Button -->
+                      <button
+                        type="button"
+                        @click="zoomStep(-0.1)"
+                        class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer shrink-0"
+                        title="Perkecil Ukuran"
+                      >
+                        −
+                      </button>
+
+                      <!-- Zoom Slider -->
+                      <input
+                        v-model.number="cropState.scale"
+                        @input="onZoomSliderChange"
+                        type="range"
+                        min="1.0"
+                        max="3.0"
+                        step="0.05"
+                        class="w-full accent-primary cursor-pointer h-2 bg-gray-200 rounded-lg"
+                      />
+
+                      <!-- Zoom In Button -->
+                      <button
+                        type="button"
+                        @click="zoomStep(0.1)"
+                        class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer shrink-0"
+                        title="Perbesar Ukuran"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <!-- Tombol Presets & Reset -->
+                    <div class="pt-2 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2">
+                      <div class="flex flex-wrap items-center gap-1.5">
+                        <span class="text-[10px] text-gray-400 font-medium">Preset Cepat:</span>
+                        <button
+                          type="button"
+                          @click="applyPreset(50, 15, 1.15)"
+                          class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-purple-100/70 hover:bg-primary hover:text-white text-purple-900 transition-all cursor-pointer"
+                        >
+                          👤 Fokus Wajah (Atas)
+                        </button>
+                        <button
+                          type="button"
+                          @click="applyPreset(50, 50, 1.0)"
+                          class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all cursor-pointer"
+                        >
+                          🎯 Pas Tengah
+                        </button>
+                        <button
+                          type="button"
+                          @click="applyPreset(50, 85, 1.1)"
+                          class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all cursor-pointer"
+                        >
+                          🔽 Fokus Bawah
+                        </button>
+                      </div>
+
+                      <!-- Tombol Reset -->
+                      <button
+                        type="button"
+                        @click="resetCrop"
+                        class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition-all cursor-pointer flex items-center gap-1"
+                      >
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Reset
+                      </button>
+                    </div>
                   </div>
 
-                  <!-- Preset Buttons -->
-                  <div class="mt-3 flex flex-wrap items-center gap-2">
-                    <span class="text-[11px] text-gray-500 font-medium">Pilihan Cepat:</span>
-                    <button
-                      type="button"
-                      @click="verticalPositionPercent = 15"
-                      :class="[
-                        'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer',
-                        verticalPositionPercent <= 25 ? 'bg-primary text-white shadow-sm' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'
-                      ]"
-                    >
-                      👤 Fokus Wajah (Atas 15%)
-                    </button>
-                    <button
-                      type="button"
-                      @click="verticalPositionPercent = 50"
-                      :class="[
-                        'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer',
-                        verticalPositionPercent > 25 && verticalPositionPercent < 75 ? 'bg-primary text-white shadow-sm' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'
-                      ]"
-                    >
-                      🎯 Tengah (50%)
-                    </button>
-                    <button
-                      type="button"
-                      @click="verticalPositionPercent = 85"
-                      :class="[
-                        'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer',
-                        verticalPositionPercent >= 75 ? 'bg-primary text-white shadow-sm' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'
-                      ]"
-                    >
-                      🔽 Bawah (85%)
-                    </button>
+                  <!-- HASIL PRATINJAU LANGSUNG (CARD DAN THUMBNAIL) -->
+                  <div class="mt-4 pt-3.5 border-t border-purple-200/80">
+                    <div class="flex items-center justify-between mb-2.5">
+                      <label class="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Pratinjau Hasil Tampilan (Card & Thumbnail)
+                      </label>
+                      <span class="text-[10px] text-gray-400 font-medium">Real-time update saat mouse digerakkan</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-stretch">
+                      <!-- 1. PRATINJAU CARD GALERI (16:9 Landscape) -->
+                      <div class="sm:col-span-8 bg-white p-3 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-2">
+                          <span class="text-[11px] font-bold text-gray-700 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            Pratinjau Card (Halaman Depan)
+                          </span>
+                          <span class="text-[10px] text-gray-400">Rasio Card Galeri</span>
+                        </div>
+
+                        <div class="relative w-full h-36 sm:h-40 rounded-xl overflow-hidden bg-gray-950 border border-gray-100 shadow-inner group">
+                          <img
+                            :src="previewImageUrl"
+                            alt="Pratinjau Card"
+                            :style="cropperStageStyle"
+                            class="w-full h-full pointer-events-none select-none"
+                            draggable="false"
+                          />
+                          <!-- Mock Badge & Title Overlay -->
+                          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-3 pointer-events-none">
+                            <span class="inline-block self-start px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-primary text-white shadow-sm mb-1">
+                              {{ formData.category || 'Kategori' }}
+                            </span>
+                            <p class="text-xs font-bold text-white line-clamp-1 drop-shadow-md">
+                              {{ formData.title || 'Judul Kegiatan Dokumentasi' }}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- 2. PRATINJAU THUMBNAIL KOTAK (1:1 Square) -->
+                      <div class="sm:col-span-4 bg-white p-3 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between items-center text-center">
+                        <div class="w-full flex items-center justify-between mb-2">
+                          <span class="text-[11px] font-bold text-gray-700 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-primary"></span>
+                            Pratinjau Thumbnail
+                          </span>
+                          <span class="text-[10px] text-gray-400">1:1 Kotak</span>
+                        </div>
+
+                        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-gray-950 border-2 border-purple-200 shadow-md relative my-auto">
+                          <img
+                            :src="previewImageUrl"
+                            alt="Pratinjau Thumbnail"
+                            :style="cropperStageStyle"
+                            class="w-full h-full pointer-events-none select-none"
+                            draggable="false"
+                          />
+                          <div class="absolute inset-0 border border-white/20 rounded-2xl pointer-events-none"></div>
+                        </div>
+
+                        <p class="text-[10px] text-gray-400 mt-2">
+                          Tampilan di daftar tabel admin & pencarian
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -687,6 +839,7 @@
 import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import logoImg from '@/assets/landing-assets/logo.png'
+import { parseImageCrop, stringifyImageCrop, getImageCropStyle } from '@/utils/imageCrop.js'
 
 const router = useRouter()
 
@@ -892,34 +1045,145 @@ onUnmounted(() => {
   if (typeof document !== 'undefined') {
     document.body.style.overflow = ''
   }
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('mousemove', onDrag)
+    window.removeEventListener('mouseup', stopDrag)
+    window.removeEventListener('touchmove', onTouchDrag)
+    window.removeEventListener('touchend', stopTouchDrag)
+  }
 })
 
 const formData = ref({
   title: '',
   category: 'Lomba',
   image: '',
-  imagePosition: 'center',
+  imagePosition: '{"x":50,"y":50,"scale":1}',
   description: '',
   fullDescription: ''
 })
 
-const verticalPositionPercent = computed({
-  get() {
-    if (!formData.value.imagePosition) return 50
-    if (formData.value.imagePosition === 'top') return 15
-    if (formData.value.imagePosition === 'bottom') return 85
-    if (formData.value.imagePosition === 'center') return 50
-    const match = String(formData.value.imagePosition).match(/(\d+)%/)
-    return match ? parseInt(match[1], 10) : 50
-  },
-  set(val) {
-    formData.value.imagePosition = `center ${val}%`
-  }
+// ========================
+// INTERACTIVE AVATAR-STYLE CROP & ZOOM STUDIO
+// ========================
+const cropperStageRef = ref(null)
+const isDragging = ref(false)
+const dragStart = { mouseX: 0, mouseY: 0, startX: 50, startY: 50 }
+
+const cropState = ref({
+  x: 50,
+  y: 50,
+  scale: 1.0
 })
 
-const formattedObjectPosition = computed(() => {
-  return `center ${verticalPositionPercent.value}%`
+const cropperStageStyle = computed(() => {
+  return getImageCropStyle(stringifyImageCrop(cropState.value))
 })
+
+function syncCropToFormData() {
+  formData.value.imagePosition = stringifyImageCrop(cropState.value)
+}
+
+function startDrag(e) {
+  if (e.button !== 0) return // Hanya klik kiri mouse
+  e.preventDefault()
+  isDragging.value = true
+  dragStart.mouseX = e.clientX
+  dragStart.mouseY = e.clientY
+  dragStart.startX = cropState.value.x
+  dragStart.startY = cropState.value.y
+
+  window.addEventListener('mousemove', onDrag)
+  window.addEventListener('mouseup', stopDrag)
+}
+
+function onDrag(e) {
+  if (!isDragging.value || !cropperStageRef.value) return
+  const rect = cropperStageRef.value.getBoundingClientRect()
+  const deltaX = e.clientX - dragStart.mouseX
+  const deltaY = e.clientY - dragStart.mouseY
+
+  // Sensitivitas drag disesuaikan dengan scale agar gerakan mouse 1:1 dengan foto
+  const sens = 100 / Math.max(1, cropState.value.scale)
+  const newX = dragStart.startX - (deltaX / rect.width) * sens
+  const newY = dragStart.startY - (deltaY / rect.height) * sens
+
+  cropState.value.x = Math.round(Math.max(-20, Math.min(120, newX)))
+  cropState.value.y = Math.round(Math.max(-20, Math.min(120, newY)))
+  syncCropToFormData()
+}
+
+function stopDrag() {
+  isDragging.value = false
+  window.removeEventListener('mousemove', onDrag)
+  window.removeEventListener('mouseup', stopDrag)
+}
+
+// Touch Drag Support untuk Tablet / HP
+function startTouchDrag(e) {
+  if (e.touches.length !== 1) return
+  isDragging.value = true
+  dragStart.mouseX = e.touches[0].clientX
+  dragStart.mouseY = e.touches[0].clientY
+  dragStart.startX = cropState.value.x
+  dragStart.startY = cropState.value.y
+
+  window.addEventListener('touchmove', onTouchDrag, { passive: false })
+  window.addEventListener('touchend', stopTouchDrag)
+}
+
+function onTouchDrag(e) {
+  if (!isDragging.value || !cropperStageRef.value || e.touches.length !== 1) return
+  e.preventDefault()
+  const rect = cropperStageRef.value.getBoundingClientRect()
+  const deltaX = e.touches[0].clientX - dragStart.mouseX
+  const deltaY = e.touches[0].clientY - dragStart.mouseY
+
+  const sens = 100 / Math.max(1, cropState.value.scale)
+  const newX = dragStart.startX - (deltaX / rect.width) * sens
+  const newY = dragStart.startY - (deltaY / rect.height) * sens
+
+  cropState.value.x = Math.round(Math.max(-20, Math.min(120, newX)))
+  cropState.value.y = Math.round(Math.max(-20, Math.min(120, newY)))
+  syncCropToFormData()
+}
+
+function stopTouchDrag() {
+  isDragging.value = false
+  window.removeEventListener('touchmove', onTouchDrag)
+  window.removeEventListener('touchend', stopTouchDrag)
+}
+
+// Mouse Wheel Zoom
+function handleWheel(e) {
+  const delta = e.deltaY < 0 ? 0.05 : -0.05
+  setZoom(cropState.value.scale + delta)
+}
+
+function setZoom(val) {
+  cropState.value.scale = Number(Math.max(1.0, Math.min(3.0, val)).toFixed(2))
+  syncCropToFormData()
+}
+
+function zoomStep(step) {
+  setZoom(cropState.value.scale + step)
+}
+
+function onZoomSliderChange() {
+  setZoom(cropState.value.scale)
+}
+
+function applyPreset(x, y, scale) {
+  cropState.value = {
+    x: Math.round(x),
+    y: Math.round(y),
+    scale: Number(scale.toFixed(2))
+  }
+  syncCropToFormData()
+}
+
+function resetCrop() {
+  applyPreset(50, 50, 1.0)
+}
 
 const previewImageUrl = computed(() => {
   return normalizeGitHubUrl(formData.value.image)
@@ -936,11 +1200,12 @@ function openAddModal() {
   isEditMode.value = false
   currentEditId.value = null
   imageLoadError.value = false
+  cropState.value = { x: 50, y: 50, scale: 1.0 }
   formData.value = {
     title: '',
     category: 'Lomba',
     image: '',
-    imagePosition: 'center',
+    imagePosition: stringifyImageCrop(cropState.value),
     description: '',
     fullDescription: ''
   }
@@ -951,11 +1216,12 @@ function openEditModal(item) {
   isEditMode.value = true
   currentEditId.value = item.id
   imageLoadError.value = false
+  cropState.value = parseImageCrop(item.imagePosition)
   formData.value = {
     title: item.title,
     category: item.category,
     image: item.image,
-    imagePosition: item.imagePosition || 'center',
+    imagePosition: stringifyImageCrop(cropState.value),
     description: item.description,
     fullDescription: item.fullDescription || item.description
   }
@@ -976,7 +1242,7 @@ async function handleSubmitForm() {
     const payload = {
       ...formData.value,
       image: normalizeGitHubUrl(formData.value.image),
-      imagePosition: formData.value.imagePosition || 'center'
+      imagePosition: formData.value.imagePosition || stringifyImageCrop(cropState.value)
     }
 
     const res = await fetch(url, {

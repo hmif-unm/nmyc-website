@@ -77,7 +77,7 @@ export const seedItems = [
     title: 'Penampilan di JIF Sebelum Wisuda',
     category: 'Penampilan',
     image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20di%20JIF%20sebelum%20Wisuda.jpg',
-    image_position: 'center 15%',
+    image_position: '{"x":50,"y":18,"scale":1.2}',
     description: 'Pertunjukan musik vokal di panggung Jakarta Islamic Fair (JIF) menjelang agenda seremoni wisuda kampus.',
     full_description: 'Tim NMYC tampil memukau mengisi panggung Jakarta Islamic Fair (JIF) dengan membawakan lagu-lagu harmoni penuh khidmat.',
     created_at: '2024-10-05T10:00:00Z'
@@ -229,7 +229,7 @@ function initLocalDatabase() {
 
   // Update fokus posisi untuk Penampilan di JIF Sebelum Wisuda jika masih default
   try {
-    db.prepare("UPDATE galleries SET image_position = 'center 15%' WHERE title LIKE '%JIF%' AND (image_position IS NULL OR image_position = 'center')").run()
+    db.prepare("UPDATE galleries SET image_position = '{\"x\":50,\"y\":18,\"scale\":1.2}' WHERE title LIKE '%JIF%' AND (image_position IS NULL OR image_position = 'center' OR image_position = 'center 15%')").run()
   } catch {}
 
   const keyCount = db.prepare('SELECT COUNT(*) as count FROM admin_keys').get() as { count: number }

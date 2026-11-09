@@ -120,14 +120,16 @@
                   'w-full h-44 sm:h-full sm:w-56 md:w-64 lg:w-72'
                 ]"
               >
-                <img
-                  :src="getOptimizedImageUrl(item.image, 600)"
-                  :alt="item.title"
-                  :style="{ objectPosition: item.imagePosition || 'center' }"
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                  loading="lazy"
-                  @error="onImageError($event, item.image)"
-                />
+                <div class="w-full h-full overflow-hidden transition-transform duration-500 ease-out group-hover:scale-105">
+                  <img
+                    :src="getOptimizedImageUrl(item.image, 600)"
+                    :alt="item.title"
+                    :style="getImageCropStyle(item.imagePosition)"
+                    class="w-full h-full"
+                    loading="lazy"
+                    @error="onImageError($event, item.image)"
+                  />
+                </div>
                 <div class="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent pointer-events-none"></div>
               </div>
 
@@ -272,8 +274,8 @@
             <img
               :src="getOptimizedImageUrl(selectedItem.image, 1200)"
               :alt="selectedItem.title"
-              :style="{ objectPosition: isFullView ? 'center' : (selectedItem.imagePosition || 'center') }"
-              :class="['w-full h-full transition-all duration-300', isFullView ? 'object-contain bg-black/95' : 'object-cover']"
+              :style="getImageCropStyle(selectedItem.imagePosition, isFullView)"
+              class="w-full h-full transition-all duration-300"
               @error="onImageError($event, selectedItem.image)"
             />
             <!-- Tombol Toggle Foto Utuh -->
@@ -318,6 +320,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import GalleryNavbar from '@/components/layout/GalleryNavbar.vue'
+import { getImageCropStyle } from '@/utils/imageCrop.js'
 
 // ========================
 // STATE GALERI DARI BACKEND
