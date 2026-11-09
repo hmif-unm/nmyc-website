@@ -41,7 +41,7 @@ export default async function handler(req: any, res: any) {
 
     try {
       const body = await parseBody(req)
-      const { title, category, image, description, fullDescription, createdAt } = body || {}
+      const { title, category, image, imagePosition, description, fullDescription, createdAt } = body || {}
 
       if (!title || !category || !image || !description) {
         return sendJson(res, 400, {
@@ -62,6 +62,7 @@ export default async function handler(req: any, res: any) {
         title: title.trim(),
         category,
         image: normalizeGitHubUrl(image),
+        imagePosition: (imagePosition || 'center').trim(),
         description: description.trim(),
         fullDescription: (fullDescription || description).trim(),
         ...(createdAt ? { createdAt } : {})

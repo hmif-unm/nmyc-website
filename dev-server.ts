@@ -10,6 +10,7 @@ import meHandler from './api/auth/me.js'
 import logoutHandler from './api/auth/logout.js'
 import galleryIndexHandler from './api/gallery/index.js'
 import galleryItemHandler from './api/gallery/[id].js'
+import imageHandler from './api/image.js'
 import apiIndexHandler from './api/index.js'
 
 const PORT = Number(process.env.PORT) || 5000
@@ -98,6 +99,10 @@ const server = http.createServer(async (req: http.IncomingMessage, rawRes: http.
 
   if (pathname === '/api/gallery' || pathname === '/api/gallery/') {
     return galleryIndexHandler(req, res)
+  }
+
+  if (pathname === '/api/image' || pathname === '/api/image/') {
+    return imageHandler(req, res)
   }
 
   if (pathname === '/api' || pathname === '/api/') {

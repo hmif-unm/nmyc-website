@@ -13,6 +13,7 @@ export interface GalleryItem {
   title: string
   category: GalleryCategory
   image: string
+  imagePosition?: string
   description: string
   fullDescription: string
   createdAt?: string
@@ -76,6 +77,7 @@ export const seedItems = [
     title: 'Penampilan di JIF Sebelum Wisuda',
     category: 'Penampilan',
     image: 'https://raw.githubusercontent.com/hmif-unm/nmyc-assets/main/penampilan/Tampil%20di%20JIF%20sebelum%20Wisuda.jpg',
+    image_position: 'center 15%',
     description: 'Pertunjukan musik vokal di panggung Jakarta Islamic Fair (JIF) menjelang agenda seremoni wisuda kampus.',
     full_description: 'Tim NMYC tampil memukau mengisi panggung Jakarta Islamic Fair (JIF) dengan membawakan lagu-lagu harmoni penuh khidmat.',
     created_at: '2024-10-05T10:00:00Z'
@@ -212,12 +214,23 @@ function initLocalDatabase() {
       title TEXT NOT NULL,
       category TEXT NOT NULL,
       image TEXT NOT NULL,
+      image_position TEXT DEFAULT 'center',
       description TEXT NOT NULL,
       full_description TEXT NOT NULL,
       created_at TEXT NOT NULL,
       updated_at TEXT
     );
   `)
+
+  // Migrasi kolom jika tabel lama belum memiliki image_position
+  try {
+    db.exec("ALTER TABLE galleries ADD COLUMN image_position TEXT DEFAULT 'center'")
+  } catch {}
+
+  // Update fokus posisi untuk Penampilan di JIF Sebelum Wisuda jika masih default
+  try {
+    db.prepare("UPDATE galleries SET image_position = 'center 15%' WHERE title LIKE '%JIF%' AND (image_position IS NULL OR image_position = 'center')").run()
+  } catch {}
 
   const keyCount = db.prepare('SELECT COUNT(*) as count FROM admin_keys').get() as { count: number }
   if (keyCount.count === 0) {
@@ -230,8 +243,8 @@ function initLocalDatabase() {
   const galleryCount = db.prepare('SELECT COUNT(*) as count FROM galleries').get() as { count: number }
   if (galleryCount.count === 0) {
     const insertGallery = db.prepare(`
-      INSERT INTO galleries (title, category, image, description, full_description, created_at)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO galleries (title, category, image, image_position, description, full_description, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `)
 
     for (const item of seedItems) {
@@ -239,6 +252,7 @@ function initLocalDatabase() {
         item.title,
         item.category,
         item.image,
+        (item as any).image_position || 'center',
         item.description,
         item.full_description,
         item.created_at
@@ -263,12 +277,23 @@ async function initD1Database() {
       title TEXT NOT NULL,
       category TEXT NOT NULL,
       image TEXT NOT NULL,
+      image_position TEXT DEFAULT 'center',
       description TEXT NOT NULL,
       full_description TEXT NOT NULL,
       created_at TEXT NOT NULL,
       updated_at TEXT
     );
   `)
+
+  // Migrasi kolom image_position di D1 jika belum ada
+  try {
+    await executeD1Query("ALTER TABLE galleries ADD COLUMN image_position TEXT DEFAULT 'center'")
+  } catch {}
+
+  // Update fokus posisi untuk Penampilan di JIF Sebelum Wisuda jika masih default
+  try {
+    await executeD1Query("UPDATE galleries SET image_position = 'center 15%' WHERE title LIKE '%JIF%' AND (image_position IS NULL OR image_position = 'center')")
+  } catch {}
 
   const keyCountRes = await executeD1Query<{ count: number }>('SELECT COUNT(*) as count FROM admin_keys')
   const keyCount = keyCountRes.results[0]?.count || 0
@@ -286,9 +311,9 @@ async function initD1Database() {
   if (galleryCount === 0) {
     for (const item of seedItems) {
       await executeD1Query(
-        `INSERT INTO galleries (title, category, image, description, full_description, created_at)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [item.title, item.category, item.image, item.description, item.full_description, item.created_at]
+        `INSERT INTO galleries (title, category, image, image_position, description, full_description, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [item.title, item.category, item.image, (item as any).image_position || 'center', item.description, item.full_description, item.created_at]
       )
     }
   }
@@ -323,6 +348,7 @@ interface DbGalleryRow {
   title: string
   category: string
   image: string
+  image_position?: string | null
   description: string
   full_description: string
   created_at: string
@@ -335,6 +361,7 @@ function mapRowToGalleryItem(row: DbGalleryRow): GalleryItem {
     title: row.title,
     category: row.category as GalleryCategory,
     image: row.image,
+    imagePosition: row.image_position || 'center',
     description: row.description,
     fullDescription: row.full_description,
     createdAt: row.created_at,
@@ -414,18 +441,20 @@ export async function insertGallery(data: {
   title: string
   category: GalleryCategory
   image: string
+  imagePosition?: string
   description: string
   fullDescription: string
   createdAt?: string
 }): Promise<GalleryItem> {
   await ensureDatabase()
   const createdAt = data.createdAt || new Date().toISOString()
+  const imagePosition = data.imagePosition || 'center'
 
   if (isCloudflareD1Configured()) {
     const res = await executeD1Query(
-      `INSERT INTO galleries (title, category, image, description, full_description, created_at)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [data.title, data.category, data.image, data.description, data.fullDescription, createdAt]
+      `INSERT INTO galleries (title, category, image, image_position, description, full_description, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [data.title, data.category, data.image, imagePosition, data.description, data.fullDescription, createdAt]
     )
 
     const newId = Number(res.meta?.last_row_id)
@@ -435,14 +464,15 @@ export async function insertGallery(data: {
 
   const db = getLocalDb()
   const stmt = db.prepare(`
-    INSERT INTO galleries (title, category, image, description, full_description, created_at)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO galleries (title, category, image, image_position, description, full_description, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `)
 
   const res = stmt.run(
     data.title,
     data.category,
     data.image,
+    imagePosition,
     data.description,
     data.fullDescription,
     createdAt
@@ -459,6 +489,7 @@ export async function updateGalleryInDb(
     title: string
     category: GalleryCategory
     image: string
+    imagePosition: string
     description: string
     fullDescription: string
     createdAt?: string
@@ -471,6 +502,7 @@ export async function updateGalleryInDb(
   const updatedTitle = data.title !== undefined ? data.title : existing.title
   const updatedCategory = data.category !== undefined ? data.category : existing.category
   const updatedImage = data.image !== undefined ? data.image : existing.image
+  const updatedImagePosition = data.imagePosition !== undefined ? data.imagePosition : (existing.imagePosition || 'center')
   const updatedDesc = data.description !== undefined ? data.description : existing.description
   const updatedFullDesc = data.fullDescription !== undefined ? data.fullDescription : existing.fullDescription
   const updatedCreatedAt = data.createdAt !== undefined ? data.createdAt : existing.createdAt
@@ -479,12 +511,13 @@ export async function updateGalleryInDb(
   if (isCloudflareD1Configured()) {
     await executeD1Query(
       `UPDATE galleries
-       SET title = ?, category = ?, image = ?, description = ?, full_description = ?, created_at = ?, updated_at = ?
+       SET title = ?, category = ?, image = ?, image_position = ?, description = ?, full_description = ?, created_at = ?, updated_at = ?
        WHERE id = ?`,
       [
         updatedTitle,
         updatedCategory,
         updatedImage,
+        updatedImagePosition,
         updatedDesc,
         updatedFullDesc,
         updatedCreatedAt || new Date().toISOString(),
@@ -499,7 +532,7 @@ export async function updateGalleryInDb(
   const db = getLocalDb()
   const stmt = db.prepare(`
     UPDATE galleries
-    SET title = ?, category = ?, image = ?, description = ?, full_description = ?, created_at = ?, updated_at = ?
+    SET title = ?, category = ?, image = ?, image_position = ?, description = ?, full_description = ?, created_at = ?, updated_at = ?
     WHERE id = ?
   `)
 
@@ -507,6 +540,7 @@ export async function updateGalleryInDb(
     updatedTitle,
     updatedCategory,
     updatedImage,
+    updatedImagePosition,
     updatedDesc,
     updatedFullDesc,
     updatedCreatedAt || new Date().toISOString(),

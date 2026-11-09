@@ -121,10 +121,12 @@
                 ]"
               >
                 <img
-                  :src="item.image"
+                  :src="getOptimizedImageUrl(item.image, 600)"
                   :alt="item.title"
-                  class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+                  :style="{ objectPosition: item.imagePosition || 'center' }"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                   loading="lazy"
+                  @error="onImageError($event, item.image)"
                 />
                 <div class="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent pointer-events-none"></div>
               </div>
@@ -266,8 +268,26 @@
           </button>
 
           <!-- Image -->
-          <div class="h-60 sm:h-72 md:h-84 overflow-hidden rounded-t-3xl bg-gray-900">
-            <img :src="selectedItem.image" :alt="selectedItem.title" class="w-full h-full object-cover" />
+          <div class="h-64 sm:h-80 md:h-96 overflow-hidden rounded-t-3xl bg-gray-900 relative group">
+            <img
+              :src="getOptimizedImageUrl(selectedItem.image, 1200)"
+              :alt="selectedItem.title"
+              :style="{ objectPosition: isFullView ? 'center' : (selectedItem.imagePosition || 'center') }"
+              :class="['w-full h-full transition-all duration-300', isFullView ? 'object-contain bg-black/95' : 'object-cover']"
+              @error="onImageError($event, selectedItem.image)"
+            />
+            <!-- Tombol Toggle Foto Utuh -->
+            <button
+              type="button"
+              @click.stop="isFullView = !isFullView"
+              class="absolute bottom-3 right-3 px-3.5 py-1.5 rounded-full bg-black/65 hover:bg-black/90 text-white text-xs font-semibold backdrop-blur-md flex items-center gap-1.5 transition-all cursor-pointer shadow-lg active:scale-95 border border-white/20 select-none"
+              :title="isFullView ? 'Kembali ke mode fokus' : 'Lihat ukuran foto utuh'"
+            >
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+              <span>{{ isFullView ? 'Fokus Pilihan' : 'Foto Utuh' }}</span>
+            </button>
           </div>
 
           <!-- Content -->
@@ -415,15 +435,34 @@ function changePage(page) {
 // MODAL DETAIL
 // ========================
 const selectedItem = ref(null)
+const isFullView = ref(false)
 
 function openDetail(item) {
   selectedItem.value = item
-  document.body.style.overflow = 'hidden'
+  isFullView.value = false
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = 'hidden'
+  }
 }
 
 function closeDetail() {
   selectedItem.value = null
-  document.body.style.overflow = ''
+  isFullView.value = false
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = ''
+  }
+}
+
+function getOptimizedImageUrl(url, width = 800) {
+  if (!url || typeof url !== 'string') return ''
+  if (url.startsWith('data:') || url.endsWith('.svg')) return url
+  return `/api/image?url=${encodeURIComponent(url)}&w=${width}`
+}
+
+function onImageError(event, fallbackUrl) {
+  if (fallbackUrl && event.target.src !== fallbackUrl) {
+    event.target.src = fallbackUrl
+  }
 }
 
 function handleKeydown(e) {

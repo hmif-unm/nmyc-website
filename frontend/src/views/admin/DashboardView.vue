@@ -283,6 +283,7 @@
                       <img
                         :src="item.image"
                         :alt="item.title"
+                        :style="{ objectPosition: item.imagePosition || 'center' }"
                         class="w-full h-full object-cover"
                         @error="$event.target.src = '/assets/landing-assets/ellipse-20.png'"
                         loading="lazy"
@@ -447,19 +448,90 @@
                   Bisa tempelkan link foto dari repositori GitHub NMYC. Link otomatis disesuaikan agar foto langsung tampil.
                 </p>
 
-                <!-- Preview Image -->
-                <div v-if="formData.image" class="mt-3 p-3 bg-gray-50 rounded-2xl border border-gray-200 flex items-center gap-3">
-                  <div class="w-20 h-16 rounded-xl overflow-hidden bg-gray-200 shrink-0 border border-gray-300">
+                <!-- Pengaturan Posisi & Fokus Foto (Custom Crop) -->
+                <div v-if="formData.image" class="mt-4 p-4 bg-purple-50/60 rounded-2xl border border-purple-100">
+                  <div class="flex items-center justify-between mb-2">
+                    <label class="text-xs font-bold text-purple-900 flex items-center gap-1.5">
+                      <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Atur Posisi & Fokus Foto (Crop)
+                    </label>
+                    <span class="text-[11px] font-semibold text-primary px-2.5 py-0.5 rounded-full bg-purple-100">
+                      Posisi: {{ verticalPositionPercent }}%
+                    </span>
+                  </div>
+
+                  <p class="text-[11px] text-gray-500 mb-3 leading-relaxed">
+                    Geser slider di bawah ini agar wajah atau objek penting tidak terpotong saat pengunjung melihat kartu galeri atau membuka detail foto.
+                  </p>
+
+                  <!-- Aspect Ratio Preview Box -->
+                  <div class="relative w-full h-44 sm:h-52 rounded-xl overflow-hidden bg-gray-900 border-2 border-primary/30 shadow-inner group">
                     <img
                       :src="previewImageUrl"
-                      alt="Preview Image"
-                      class="w-full h-full object-cover"
+                      alt="Preview Custom Crop"
+                      :style="{ objectPosition: formattedObjectPosition }"
+                      class="w-full h-full object-cover transition-all duration-150 select-none"
                       @error="imageLoadError = true"
                       @load="imageLoadError = false"
                     />
+                    <div class="absolute inset-0 border border-white/20 pointer-events-none rounded-xl"></div>
+                    <div class="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/60 backdrop-blur-sm text-[10px] text-white/90 font-medium">
+                      Pratinjau Tampilan Web
+                    </div>
                   </div>
-                  <div class="min-w-0 flex-1">
-                    <p class="text-xs font-bold text-gray-700">Preview Image</p>
+
+                  <!-- Vertical Position Slider -->
+                  <div class="mt-4">
+                    <div class="flex items-center justify-between text-[11px] text-gray-500 font-medium mb-1.5">
+                      <span>Fokus Atas (Wajah 0%)</span>
+                      <span>Tengah (50%)</span>
+                      <span>Bawah (100%)</span>
+                    </div>
+                    <input
+                      v-model.number="verticalPositionPercent"
+                      type="range"
+                      min="0"
+                      max="100"
+                      step="1"
+                      class="w-full accent-primary cursor-pointer h-2 bg-gray-200 rounded-lg"
+                    />
+                  </div>
+
+                  <!-- Preset Buttons -->
+                  <div class="mt-3 flex flex-wrap items-center gap-2">
+                    <span class="text-[11px] text-gray-500 font-medium">Pilihan Cepat:</span>
+                    <button
+                      type="button"
+                      @click="verticalPositionPercent = 15"
+                      :class="[
+                        'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer',
+                        verticalPositionPercent <= 25 ? 'bg-primary text-white shadow-sm' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'
+                      ]"
+                    >
+                      👤 Fokus Wajah (Atas 15%)
+                    </button>
+                    <button
+                      type="button"
+                      @click="verticalPositionPercent = 50"
+                      :class="[
+                        'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer',
+                        verticalPositionPercent > 25 && verticalPositionPercent < 75 ? 'bg-primary text-white shadow-sm' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'
+                      ]"
+                    >
+                      🎯 Tengah (50%)
+                    </button>
+                    <button
+                      type="button"
+                      @click="verticalPositionPercent = 85"
+                      :class="[
+                        'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer',
+                        verticalPositionPercent >= 75 ? 'bg-primary text-white shadow-sm' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'
+                      ]"
+                    >
+                      🔽 Bawah (85%)
+                    </button>
                   </div>
                 </div>
               </div>
@@ -826,8 +898,27 @@ const formData = ref({
   title: '',
   category: 'Lomba',
   image: '',
+  imagePosition: 'center',
   description: '',
   fullDescription: ''
+})
+
+const verticalPositionPercent = computed({
+  get() {
+    if (!formData.value.imagePosition) return 50
+    if (formData.value.imagePosition === 'top') return 15
+    if (formData.value.imagePosition === 'bottom') return 85
+    if (formData.value.imagePosition === 'center') return 50
+    const match = String(formData.value.imagePosition).match(/(\d+)%/)
+    return match ? parseInt(match[1], 10) : 50
+  },
+  set(val) {
+    formData.value.imagePosition = `center ${val}%`
+  }
+})
+
+const formattedObjectPosition = computed(() => {
+  return `center ${verticalPositionPercent.value}%`
 })
 
 const previewImageUrl = computed(() => {
@@ -849,6 +940,7 @@ function openAddModal() {
     title: '',
     category: 'Lomba',
     image: '',
+    imagePosition: 'center',
     description: '',
     fullDescription: ''
   }
@@ -863,6 +955,7 @@ function openEditModal(item) {
     title: item.title,
     category: item.category,
     image: item.image,
+    imagePosition: item.imagePosition || 'center',
     description: item.description,
     fullDescription: item.fullDescription || item.description
   }
@@ -882,7 +975,8 @@ async function handleSubmitForm() {
 
     const payload = {
       ...formData.value,
-      image: normalizeGitHubUrl(formData.value.image)
+      image: normalizeGitHubUrl(formData.value.image),
+      imagePosition: formData.value.imagePosition || 'center'
     }
 
     const res = await fetch(url, {
